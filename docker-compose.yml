@@ -1,0 +1,13 @@
+version: "3.8"
+
+services:
+  psql-db:
+    image: postgres
+    container_name: postgres
+    restart: always
+    environment:
+      - POSTGRES_USER=integration
+      - POSTGRES_PASSWORD=integration
+      - POSTGRES_DB=integration_db
+    ports:
+      - '5432:5432'
