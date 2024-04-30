@@ -15,12 +15,12 @@ public interface DataParser {
     void exportData(String destinationPath, Filetype filetype);
 
     /**
-     * Funkcja wczytujaca zaimportowane dane o grach ze Steama
+     * Funkcja wczytujaca zaimportowane dane o grach ze Steama do kolekcji obiektów SteamGame
      */
     void loadSteamGames();
 
     /**
-     * Funkcja wczytujaca zaimportowane dane o grach z Twitcha
+     * Funkcja wczytujaca zaimportowane dane o grach z Twitcha do kolekcji obiektów typu TwitchGame
      */
     void loadTwitchGames();
 }
