@@ -21,8 +21,6 @@ public class CsvParser implements DataParser {
     public List<SteamGame> steamGames;
     public List<TwitchGame> twitchGames;
 
-    private final String STEAM_CSV_CONDITION = "gamename", TWITCH_CSV_CONDITION = "Rank";
-
     @Override
     public void importData(String sourcePath) {
         this.csv = new ArrayList<>();
@@ -32,13 +30,15 @@ public class CsvParser implements DataParser {
             throw new RuntimeException(e);
         }
 //        odcina pierwszy wiersz z nagłówkiem
-        csvFirstRow = csv.get(0);
-//        ucina zeby mniej było do mielenia ( do testowania )
-        csv = csv.subList(1,5);
+        csvFirstRow = this.csv.get(0);
+//        ucina pierwszy wiersz ( z nagłówkami ) i bierze tylko do 5tego ( do testów aby mniej mieliło )
+        this.csv = csv.subList(1,5);
     }
 
     @Override
     public void exportData(String destinationPath, Filetype filetype) {
+        String STEAM_CSV_CONDITION = "gamename";
+        String TWITCH_CSV_CONDITION = "Rank";
         switch (filetype){
             case CSV -> {
                 try (CSVWriter writer = new CSVWriter(new FileWriter(destinationPath))) {
@@ -51,6 +51,7 @@ public class CsvParser implements DataParser {
             case JSON -> {
                 ObjectMapper mapper = new ObjectMapper();
                 try {
+
                     if (csvFirstRow[0].equals(STEAM_CSV_CONDITION)){
                         mapper.writeValue(new File(destinationPath), steamGames);
                     } else if (csvFirstRow[0].equals(TWITCH_CSV_CONDITION)) {
@@ -63,7 +64,7 @@ public class CsvParser implements DataParser {
             }
             case XML -> {
                 XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
-                String objectName = (csvFirstRow[0].equals("gamename")) ? "SteamGamesStats" : "TwitchGamesStats";
+                String objectName = (csvFirstRow[0].equals(STEAM_CSV_CONDITION)) ? "SteamGamesStats" : "TwitchGamesStats";
                 try {
                     XMLStreamWriter writer = outputFactory.createXMLStreamWriter(new FileOutputStream(destinationPath), "UTF-8");
                     ArrayList<String> localNames = new ArrayList<>(Arrays.asList(csvFirstRow));
@@ -143,5 +144,9 @@ public class CsvParser implements DataParser {
                 twitchGames.add(game);
             }
         }
+    }
+    public void showgames() {
+        steamGames.forEach(System.out::println);
+        twitchGames.forEach(System.out::println);
     }
 }
