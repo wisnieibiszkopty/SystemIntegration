@@ -1,9 +1,6 @@
 package com.project.steamtwitchintegration.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Data
@@ -14,7 +11,9 @@ public class TwitchGame {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
+    @Column(name = "game_month")
     private String month;
+    @Column(name = "game_year")
     private String year;
     private int hoursWatched;
     private int hoursStreamed;
