@@ -6,6 +6,8 @@ import com.opencsv.CSVWriter;
 import com.opencsv.exceptions.CsvException;
 import com.project.steamtwitchintegration.models.SteamGame;
 import com.project.steamtwitchintegration.models.TwitchGame;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -15,6 +17,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@Getter
+@Setter
 public class CsvParser implements DataParser {
     public List<String[]> csv;
     public String[] csvFirstRow;

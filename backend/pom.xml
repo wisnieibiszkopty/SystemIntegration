@@ -53,18 +53,15 @@
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 			<scope>runtime</scope>
+		</dependency>
 <!--		do CSVki-->
+<!--		co to za error ??? -->
 		<dependency>
 			<groupId>com.opencsv</groupId>
 			<artifactId>opencsv</artifactId>
 			<version>5.8</version>
 		</dependency>
-<!--		do JSON-->
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-databind</artifactId>
-			<version>2.13.4.1</version>
-		</dependency>
+
 	</dependencies>
 
 	<build>
