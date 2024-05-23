@@ -22,8 +22,13 @@ import java.util.List;
 public class CsvParser implements DataParser {
     public List<String[]> csv;
     public String[] csvFirstRow;
+
+
+    // kluczem bedzie nazwa gry, a Listami wiersze z csv z danymi ze Steama i Twitcha, jakos ujednolicic daty (podzial na miesiace)
     public List<SteamGame> steamGames;
     public List<TwitchGame> twitchGames;
+
+    // TODO obsluzyc wariant "NA/NaN" w przypadku danych konwertowanych na liczbe w bazie danych
 
     @Override
     public void importData(String sourcePath) {
@@ -35,8 +40,8 @@ public class CsvParser implements DataParser {
         }
 //        odcina pierwszy wiersz z nagłówkiem
         csvFirstRow = this.csv.get(0);
-//        ucina pierwszy wiersz ( z nagłówkami ) i bierze tylko do 5tego ( do testów aby mniej mieliło )
-        this.csv = csv.subList(1,5);
+//        ucina pierwszy wiersz ( z nagłówkami ) i bierze tylko do  n-tego ( do testów aby mniej mieliło )
+        this.csv = csv.subList(1,100);
     }
 
     @Override

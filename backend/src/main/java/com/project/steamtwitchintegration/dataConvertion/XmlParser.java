@@ -1,5 +1,6 @@
 package com.project.steamtwitchintegration.dataConvertion;
 
+// TODO dokonczyc
 public class XmlParser implements DataParser {
     @Override
     public void importData(String sourcePath) {

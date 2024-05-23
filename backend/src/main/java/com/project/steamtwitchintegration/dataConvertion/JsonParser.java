@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+// TODO dokonczyc
 public class JsonParser implements DataParser{
     private Map<?,?> json;
     private ObjectMapper mapper = new ObjectMapper();

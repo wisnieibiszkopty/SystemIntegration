@@ -12,6 +12,10 @@ import org.springframework.stereotype.Component;
 
 import java.nio.file.Path;
 
+// TODO wyselekcjonowac reprezentatywna grupe gier do oceny statystycznej, moga sie przydac oceny z IGN albo metacritic lub igdb
+// TODO wydzielic z twitcha gry ktore sa dostepne na steamie
+// TODO ogarnc od steama klucz do API
+// TODO ogarnac od twitcha dostep do API
 @Slf4j
 @Component
 public class DatabaseInitializer implements CommandLineRunner {
@@ -41,7 +45,7 @@ public class DatabaseInitializer implements CommandLineRunner {
         steamRepository.saveAll(csvParser.getSteamGames());
 
         log.info("Loaded steam games");
-        System.out.println(csvParser);
+//        System.out.println(csvParser);
 
         // Loading data about games form Twitch
         ClassPathResource twitchResource = new ClassPathResource("data/Twitch_game_data.csv");
@@ -55,9 +59,9 @@ public class DatabaseInitializer implements CommandLineRunner {
         twitchRepository.saveAll(csvParser.getTwitchGames());
 
         log.info("Loaded twitch games");
-        System.out.println(csvParser);
+//        System.out.println(csvParser);
 
-        csvParser.showgames();
+//        csvParser.showgames();
     }
 
 }
