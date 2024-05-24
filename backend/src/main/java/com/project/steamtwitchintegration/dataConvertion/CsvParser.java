@@ -18,32 +18,6 @@ import javax.xml.stream.XMLStreamWriter;
 import java.io.*;
 import java.util.*;
 
-/*
-    JAKBYS CHCIAL PRZETESTOWAC TO TU MASZ KOD
-    long startTime = System.nanoTime();
-		long startTime = System.nanoTime();
-		try {
-			CsvParser csvParser = new CsvParser();
-			ClassPathResource steamFile = new ClassPathResource("data/SteamModified.csv");
-			ClassPathResource twitchFile = new ClassPathResource("data/Twitch_game_data.csv");
-			Path steamPath = steamFile.getFile().toPath();
-			Path twitchPath = twitchFile.getFile().toPath();
-			csvParser.importData(steamPath.toString());
-//			csvParser.exportData("C:\\Users\\pwins\\Documents\\SEM 6\\Szkielety programistyczne w aplikacjach internetowych\\SystemIntegration\\backend\\src\\main\\resources\\data\\exported\\steamEXPORTED.csv", Filetype.CSV);
-//			csvParser.exportData("C:\\Users\\pwins\\Documents\\SEM 6\\Szkielety programistyczne w aplikacjach internetowych\\SystemIntegration\\backend\\src\\main\\resources\\data\\exported\\steamEXPORTED.json", Filetype.JSON);
-//			csvParser.exportData("C:\\Users\\pwins\\Documents\\SEM 6\\Szkielety programistyczne w aplikacjach internetowych\\SystemIntegration\\backend\\src\\main\\resources\\data\\exported\\steamEXPORTED.xml", Filetype.XML);
-			csvParser.importData(twitchPath.toString());
-//			csvParser.exportData("C:\\Users\\pwins\\Documents\\SEM 6\\Szkielety programistyczne w aplikacjach internetowych\\SystemIntegration\\backend\\src\\main\\resources\\data\\exported\\twitchEXPORTED.csv", Filetype.CSV);
-//			csvParser.exportData("C:\\Users\\pwins\\Documents\\SEM 6\\Szkielety programistyczne w aplikacjach internetowych\\SystemIntegration\\backend\\src\\main\\resources\\data\\exported\\twitchEXPORTED.json", Filetype.JSON);
-//			csvParser.exportData("C:\\Users\\pwins\\Documents\\SEM 6\\Szkielety programistyczne w aplikacjach internetowych\\SystemIntegration\\backend\\src\\main\\resources\\data\\exported\\twitchEXPORTED.xml", Filetype.XML);
-			csvParser.loadGames();
-		}catch (IOException e) {
-			e.printStackTrace();
-		}
-		long endTime = System.nanoTime();
-		System.out.println("Czas wykonania: " + (endTime - startTime)/ 1_000_000 + " ms");
- */
-
 @Getter
 @Setter
 @Slf4j
