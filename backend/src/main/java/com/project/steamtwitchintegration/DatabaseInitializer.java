@@ -33,19 +33,19 @@ public class DatabaseInitializer implements CommandLineRunner {
         CsvParser csvParser = new CsvParser();
 
         // Loading data about games from Steam
-        ClassPathResource steamResource = new ClassPathResource("data/SteamCharts.csv");
-        Path steamPath = steamResource.getFile().toPath();
-        csvParser.importData(steamPath.toString());
-
-//		csvParser.exportData("src/main/resources/data/SteamTEST.csv", Filetype.CSV);
-//		csvParser.exportData("src/main/resources/data/SteamTEST.json", Filetype.JSON);
-//		csvParser.exportData("src/main/resources/data/SteamTEST.xml", Filetype.XML);
-
-        csvParser.loadSteamGames();
-        steamRepository.saveAll(csvParser.getSteamGames());
-
-        log.info("Loaded steam games");
-//        System.out.println(csvParser);
+//        ClassPathResource steamResource = new ClassPathResource("data/SteamCharts.csv");
+//        Path steamPath = steamResource.getFile().toPath();
+//        csvParser.importData(steamPath.toString());
+//
+////		csvParser.exportData("src/main/resources/data/SteamTEST.csv", Filetype.CSV);
+////		csvParser.exportData("src/main/resources/data/SteamTEST.json", Filetype.JSON);
+////		csvParser.exportData("src/main/resources/data/SteamTEST.xml", Filetype.XML);
+//
+//        csvParser.loadSteamGames();
+//        steamRepository.saveAll(csvParser.getSteamGames());
+//
+//        log.info("Loaded steam games");
+////        System.out.println(csvParser);
 
         // Loading data about games form Twitch
         ClassPathResource twitchResource = new ClassPathResource("data/Twitch_game_data.csv");

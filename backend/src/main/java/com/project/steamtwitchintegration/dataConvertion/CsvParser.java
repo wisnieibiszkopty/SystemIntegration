@@ -41,7 +41,8 @@ public class CsvParser implements DataParser {
 //        odcina pierwszy wiersz z nagłówkiem
         csvFirstRow = this.csv.get(0);
 //        ucina pierwszy wiersz ( z nagłówkami ) i bierze tylko do  n-tego ( do testów aby mniej mieliło )
-        this.csv = csv.subList(1,100);
+        //this.csv = csv.subList(1,100);
+        csv.remove(0);
     }
 
     @Override
