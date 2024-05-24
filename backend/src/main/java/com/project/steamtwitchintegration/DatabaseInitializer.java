@@ -6,6 +6,7 @@ import com.project.steamtwitchintegration.repositories.SteamGameRepository;
 import com.project.steamtwitchintegration.repositories.TwitchGameRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
@@ -27,6 +28,9 @@ public class DatabaseInitializer implements CommandLineRunner {
         this.steamRepository = steamRepository;
         this.twitchRepository = twitchRepository;
     }
+
+    //@Value("${twitchKey}")
+    //private String key;
 
     @Override
     public void run(String... args) throws Exception {
@@ -62,6 +66,8 @@ public class DatabaseInitializer implements CommandLineRunner {
 //        System.out.println(csvParser);
 
 //        csvParser.showgames();
+
+        //log.info(key);
     }
 
 }
