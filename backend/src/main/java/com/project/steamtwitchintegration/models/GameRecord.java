@@ -19,7 +19,7 @@ public class GameRecord {
     private double steamAveragePlayers;
     private double steamGainPlayers;
     private int steamPeakPlayers;
-    private int steamAvgPeakPerc;
+    private String steamAvgPeakPerc;
 //    dane z Twitcha
     private int twitchHoursWatched;
     private int twitchHoursStreamed;

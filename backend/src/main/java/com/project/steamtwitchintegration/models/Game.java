@@ -17,6 +17,6 @@ public class Game {
     private List<GameRecord> gameRecords = new ArrayList<>();
 
     public void addGameRecord(GameRecord gameRecord){
-
+        this.gameRecords.add(gameRecord);
     }
 }
