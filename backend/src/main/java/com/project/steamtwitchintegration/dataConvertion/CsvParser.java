@@ -164,6 +164,8 @@ public class CsvParser implements DataParser {
                     }
             );
         }
+//        wybranie gier z iloscia wpisow wieksza od 10
+        games = games.stream().filter(game -> game.getGameRecords().size() > 10).toList();
 
         for (Game g : games) {
             if (g.getGameRecords().isEmpty()) {
@@ -176,6 +178,8 @@ public class CsvParser implements DataParser {
                 }
             }
         }
+
+
     }
 
     @Override
