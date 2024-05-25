@@ -5,8 +5,10 @@ import com.project.steamtwitchintegration.dataConvertion.Filetype;
 import com.project.steamtwitchintegration.repositories.GameRepository;
 import com.project.steamtwitchintegration.repositories.SteamGameRepository;
 import com.project.steamtwitchintegration.repositories.TwitchGameRepository;
+import com.project.steamtwitchintegration.services.IGDBService;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
@@ -14,19 +16,21 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.nio.file.Path;
 
-// TODO wyselekcjonowac reprezentatywna grupe gier do oceny statystycznej, moga sie przydac oceny z IGN albo metacritic lub igdb
-// TODO wydzielic z twitcha gry ktore sa dostepne na steamie
-// TODO ogarnc od steama klucz do API
-// TODO ogarnac od twitcha dostep do API
 @Slf4j
 @Component
 public class DatabaseInitializer implements CommandLineRunner {
     private final GameRepository gameRepository;
     private CsvParser csvParser;
 
-    public DatabaseInitializer(GameRepository gameRepository, CsvParser csvParser) {
-        this.gameRepository = gameRepository;
-        this.csvParser = csvParser;
+    final SteamGameRepository steamRepository;
+    private final TwitchGameRepository twitchRepository;
+    private final IGDBService igdbService;
+
+    public DatabaseInitializer(SteamGameRepository steamRepository, TwitchGameRepository twitchRepository, IGDBService igdbService) {
+        this.steamRepository = steamRepository;
+        this.twitchRepository = twitchRepository;
+        this.igdbService = igdbService;
+
     }
 
     @Override

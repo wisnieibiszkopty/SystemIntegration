@@ -23,8 +23,8 @@ import java.util.*;
 @Slf4j
 @Service
 public class CsvParser implements DataParser {
-
     public List<Game> games = new ArrayList<>();
+
     String STEAM_CSV_CONDITION = "gamename";
     String TWITCH_CSV_CONDITION = "Rank";
 
