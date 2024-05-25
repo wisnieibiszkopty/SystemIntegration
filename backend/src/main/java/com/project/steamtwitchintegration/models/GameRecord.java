@@ -3,9 +3,6 @@ package com.project.steamtwitchintegration.models;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Data
 @Entity(name = "gameRecord")
 public class GameRecord {
@@ -20,26 +17,10 @@ public class GameRecord {
     private String year;
     @Column(name = "record_month")
     private String month;
-    // Steam data
-//    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-//    @JoinColumn(name = "steam_stats_id", referencedColumnName = "id")
+
     @OneToOne(mappedBy = "record", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private SteamStats steamStats;
-//    private double steamAveragePlayers;
-//    private double steamGainPlayers;
-//    private int steamPeakPlayers;
-//    private String steamAvgPeakPerc;
-    // Twitch data
-//    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-//    @JoinColumn(name = "twitch_stats_id", referencedColumnName = "id")
+
     @OneToOne(mappedBy = "record", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private TwitchStats twitchStats;
-//    private int twitchHoursWatched;
-//    private int twitchHoursStreamed;
-//    private int twitchPeakViewers;
-//    private int twitchPeakChannels;
-//    private int twitchStreamers;
-//    private int twitchAvgViewers;
-//    private int twitchAvgChannels;
-//    private double twitchAvgViewerRatio;
 }

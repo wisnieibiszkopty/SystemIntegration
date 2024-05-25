@@ -21,9 +21,6 @@ public class SteamStats {
     private int steamPeakPlayers;
     private String steamAvgPeakPerc;
 
-//    @OneToOne()
-//    @JoinColumn(name = "gameRecord_id")
-    //@OneToOne(mappedBy = "steamStats")
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "gameRecord_id")
     private GameRecord record;

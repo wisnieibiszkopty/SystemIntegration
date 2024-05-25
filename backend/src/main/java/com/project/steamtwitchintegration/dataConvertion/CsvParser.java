@@ -5,15 +5,11 @@ import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 import com.opencsv.exceptions.CsvException;
 import com.project.steamtwitchintegration.models.*;
-import com.project.steamtwitchintegration.repositories.GameRecordRepository;
 import com.project.steamtwitchintegration.repositories.GameRepository;
-import com.project.steamtwitchintegration.repositories.SteamStatsRepository;
-import com.project.steamtwitchintegration.repositories.TwitchStatsRepository;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import javax.xml.stream.XMLOutputFactory;
@@ -37,19 +33,8 @@ public class CsvParser implements DataParser {
     public List<SteamGame> steamGames;
     public List<TwitchGame> twitchGames;
 
-    // We don't save game records in database ???
-    public List<GameRecord> gameRecords = new ArrayList<>();
-    public List<TwitchStats> twitchStatsList = new ArrayList<>();
-    public List<SteamStats> steamStatsList = new ArrayList<>();
-
     @Autowired
     private GameRepository gameRepository;
-    @Autowired
-    private GameRecordRepository gameRecordRepository;
-    @Autowired
-    private TwitchStatsRepository twitchStatsRepository;
-    @Autowired
-    private SteamStatsRepository steamStatsRepository;
 
     @Override
     public void importData(String sourcePath) {
@@ -144,7 +129,7 @@ public class CsvParser implements DataParser {
         }
     }
 
-  private GameRecord gameRecordInitialize(Game game, SteamGame steamGame, TwitchGame twitchGame) {
+//  private GameRecord gameRecordInitialize(Game game, SteamGame steamGame, TwitchGame twitchGame) {
 //        GameRecord gameRecord = new GameRecord();
 //        gameRecord.setGame(game);
 //        gameRecord.setYear(steamGame.getYear());
@@ -162,8 +147,9 @@ public class CsvParser implements DataParser {
 //        gameRecord.setTwitchAvgChannels(twitchGame.getAverageChannels());
 //        gameRecord.setTwitchAvgViewerRatio(twitchGame.getAverageViewerRatio());
 //        return gameRecord;
-      return null;
-    }
+//      return null;
+//    }
+
     @Override
     public void loadGames() {
         log.info("Steam games count: " + steamGames.size());
@@ -195,9 +181,9 @@ public class CsvParser implements DataParser {
                                     && steamGame.getMonth().equals(twitchGame.getMonth())
                             )
                             .forEach(twitchGame -> {
-                                GameRecord record = gameRecordInitialize(game, steamGame, twitchGame);
-                                System.out.println(record);
-                                game.addGameRecord(record);
+//                                GameRecord record = gameRecordInitialize(game, steamGame, twitchGame);
+//                                System.out.println(record);
+//                                game.addGameRecord(record);
                             });
                         games.add(game);
                     }
@@ -405,8 +391,6 @@ public class CsvParser implements DataParser {
                             // gameRecord is existing record with steam data already inserted
                             // now we only have to add twitch data
                             gameRecord -> {
-                                //gameRecord.setTwitchAvgChannels(twitchGame.getAverageChannels());
-                                //gameRecord.setTwitchAvgViewers(twitchGame.getAverageViewers());
                                 TwitchStats twitchStats = getTwitchStats(twitchGame);
                                 twitchStats.setRecord(gameRecord);
                                 gameRecord.setTwitchStats(twitchStats);
@@ -418,20 +402,15 @@ public class CsvParser implements DataParser {
                                 GameRecord record = new GameRecord();
                                 record.setYear(twitchGame.getYear());
                                 record.setMonth(twitchGame.getMonth());
-                                //record.setTwitchAvgChannels(twitchGame.getAverageChannels());
-                                //record.setTwitchAvgViewers(twitchGame.getAverageViewers());
                                 TwitchStats twitchStats = getTwitchStats(twitchGame);
                                 twitchStats.setRecord(record);
                                 record.setTwitchStats(twitchStats);
-
                                 record.setGame(existingGame);
                                 existingGame.getGameRecords().add(record);
                             }
                         );
                 }));
         });
-
-
 
         gameRepository.saveAll(games);
     }

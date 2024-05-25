@@ -25,9 +25,6 @@ public class TwitchStats {
     private int twitchAvgChannels;
     private double twitchAvgViewerRatio;
 
-//    @OneToOne(mappedBy = "twitchStats")
-//    @JoinColumn(name = "gameRecord_id")
-//    @MapsId
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "gameRecord_id")
     private GameRecord record;

@@ -36,11 +36,6 @@ public class GameController {
         return this.gameService.getLimitedGames(limit);
     }
 
-    @GetMapping("/recors")
-    public List<GameRecord> getRecords(){
-        return gameRecordRepository.findAll();
-    }
-
     @Operation
     @GetMapping("/{name}")
     public List<GameRecord> getGame(@PathVariable String name) {
