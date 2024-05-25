@@ -1,7 +1,15 @@
 package com.project.steamtwitchintegration.dataConvertion;
 
+import com.project.steamtwitchintegration.models.Game;
+import com.project.steamtwitchintegration.models.SteamGame;
+import com.project.steamtwitchintegration.models.TwitchGame;
+
+import java.util.List;
+
 // TODO dokonczyc
-public class XmlParser implements DataParser {
+public class XmlParser extends Parser implements DataParser {
+
+
     @Override
     public void importData(String sourcePath) {
 
@@ -9,21 +17,6 @@ public class XmlParser implements DataParser {
 
     @Override
     public void exportData(String destinationPath, Filetype filetype) {
-
-    }
-
-    @Override
-    public void loadGames() {
-
-    }
-
-    @Override
-    public void loadSteamGames() {
-
-    }
-
-    @Override
-    public void loadTwitchGames() {
 
     }
 }
