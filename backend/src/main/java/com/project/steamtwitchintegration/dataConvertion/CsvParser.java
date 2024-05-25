@@ -22,7 +22,6 @@ import java.util.*;
 @Setter
 @Slf4j
 public class CsvParser implements DataParser {
-
     public List<Game> games;
     String STEAM_CSV_CONDITION = "gamename";
     String TWITCH_CSV_CONDITION = "Rank";
