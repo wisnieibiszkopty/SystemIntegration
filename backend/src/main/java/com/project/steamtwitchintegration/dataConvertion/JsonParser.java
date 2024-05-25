@@ -31,6 +31,11 @@ public class JsonParser implements DataParser{
     }
 
     @Override
+    public void loadGames() {
+
+    }
+
+    @Override
     public void loadSteamGames() {
 
     }

@@ -3,7 +3,6 @@ package com.project.steamtwitchintegration.controllers;
 import com.project.steamtwitchintegration.models.SteamGame;
 import com.project.steamtwitchintegration.services.SteamGameService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
