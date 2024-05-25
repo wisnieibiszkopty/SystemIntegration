@@ -7,4 +7,8 @@ Problem przy tworzeniu bazydanych zwiazany z id, najpewniej cos spowodowane rela
 TODO Dokonczyc jsonParser i xmlParser.
 
 Pierwszy rekord SteamCharts nie zawiera wartości gain, gdyż nie jest porównywany z danymi z poprzedniego miesiąca
-Wartość ta została zamieniona na 0. Podobny problem wystepował również przy odchylenie standardowe
+Wartość ta została zamieniona na 0. Podobny problem wystepował również przy odchylenie standardowe.
+
+Początkowo struktura bazy danych odpowiadała plikom csv - występowały dwie tabele dla danych z Twitcha i Steama.
+Nie było to jednak optymalne rozwiązanie do dalszego użytku w aplikacji, dlatego od teraz istnieje ogólny obieg gra,
+do którego przypisane są rekordy zawierające informacje na temat statystyk z danego miesiąca.
