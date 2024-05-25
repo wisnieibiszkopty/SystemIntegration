@@ -23,21 +23,23 @@ public class GameRecord {
     // Steam data
 //    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 //    @JoinColumn(name = "steam_stats_id", referencedColumnName = "id")
-//    private SteamStats steamStats;
-    private double steamAveragePlayers;
-    private double steamGainPlayers;
-    private int steamPeakPlayers;
-    private String steamAvgPeakPerc;
+    @OneToOne(mappedBy = "record", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private SteamStats steamStats;
+//    private double steamAveragePlayers;
+//    private double steamGainPlayers;
+//    private int steamPeakPlayers;
+//    private String steamAvgPeakPerc;
     // Twitch data
 //    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 //    @JoinColumn(name = "twitch_stats_id", referencedColumnName = "id")
-//    private TwitchStats twitchStats;
-    private int twitchHoursWatched;
-    private int twitchHoursStreamed;
-    private int twitchPeakViewers;
-    private int twitchPeakChannels;
-    private int twitchStreamers;
-    private int twitchAvgViewers;
-    private int twitchAvgChannels;
-    private double twitchAvgViewerRatio;
+    @OneToOne(mappedBy = "record", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private TwitchStats twitchStats;
+//    private int twitchHoursWatched;
+//    private int twitchHoursStreamed;
+//    private int twitchPeakViewers;
+//    private int twitchPeakChannels;
+//    private int twitchStreamers;
+//    private int twitchAvgViewers;
+//    private int twitchAvgChannels;
+//    private double twitchAvgViewerRatio;
 }

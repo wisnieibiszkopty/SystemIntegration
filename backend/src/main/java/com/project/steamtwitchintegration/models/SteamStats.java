@@ -24,6 +24,8 @@ public class SteamStats {
 //    @OneToOne()
 //    @JoinColumn(name = "gameRecord_id")
     //@OneToOne(mappedBy = "steamStats")
-    //private GameRecord record;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "gameRecord_id")
+    private GameRecord record;
 
 }
