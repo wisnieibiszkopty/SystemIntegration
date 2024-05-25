@@ -22,22 +22,27 @@ import java.nio.file.Path;
 @Component
 public class DatabaseInitializer implements CommandLineRunner {
     private final GameRepository gameRepository;
+    private CsvParser csvParser;
 
-    public DatabaseInitializer(GameRepository gameRepository) {
+    public DatabaseInitializer(GameRepository gameRepository, CsvParser csvParser) {
         this.gameRepository = gameRepository;
+        this.csvParser = csvParser;
     }
 
     @Override
     public void run(String... args) throws Exception {
-        CsvParser csvParser = new CsvParser();
+        //CsvParser csvParser = new CsvParser();
         ClassPathResource steamFile = new ClassPathResource("data/SteamModified.csv");
         ClassPathResource twitchFile = new ClassPathResource("data/Twitch_game_data.csv");
         Path steamPath = steamFile.getFile().toPath();
         Path twitchPath = twitchFile.getFile().toPath();
+        log.info("Loading data... ");
         csvParser.importData(steamPath.toString());
         csvParser.importData(twitchPath.toString());
-        csvParser.loadGames();
-//        gameRepository.saveAll(csvParser.getGames());
+        csvParser.loadGames2();
+        log.info("Finished loading data");
+        System.out.println(csvParser.getGames().size());
+        //gameRepository.saveAll(csvParser.getGames());
     }
 
 }
