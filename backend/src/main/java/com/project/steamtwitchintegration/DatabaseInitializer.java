@@ -39,9 +39,8 @@ public class DatabaseInitializer implements CommandLineRunner {
         log.info("Loading data... ");
         csvParser.importData(steamPath.toString());
         csvParser.importData(twitchPath.toString());
-        csvParser.loadGames2();
+        csvParser.loadGames3();
         log.info("Finished loading data");
-        System.out.println(csvParser.getGames().size());
         //gameRepository.saveAll(csvParser.getGames());
     }
 

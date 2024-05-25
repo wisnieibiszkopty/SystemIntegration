@@ -12,8 +12,8 @@ public class GameRecord {
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "gameName")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "game_id")
     private Game game;
 
     @Column(name = "record_year")

@@ -63,7 +63,7 @@ public class CsvParser implements DataParser {
 //        odcina pierwszy wiersz z nagłówkiem
         csvFirstRow = this.csv.get(0);
 //        ucina pierwszy wiersz ( z nagłówkami ) i bierze tylko do  n-tego ( do testów aby mniej mieliło )
-        this.csv = csv.subList(1,2000);
+        this.csv = csv.subList(1,500);
         this.csv.remove(0);
         if (csvFirstRow[0].equals(STEAM_CSV_CONDITION)) {
             loadSteamGames();
@@ -236,7 +236,12 @@ public class CsvParser implements DataParser {
         log.info("Twitch games count: " + twitchGames.size());
         log.info("Steam games count: " + steamGames.size());
 
-        games = gameRepository.saveAll(games);
+        gameRepository.saveAll(games);
+        games = gameRepository.findAll();
+        System.out.println("size: " + games.size());
+        games.forEach(game -> {
+            System.out.println("id: " + game.getId() + " " + game.getGameName());
+        });
 
         // Reading records based on steam records first
         steamGames.forEach(game -> {
@@ -244,32 +249,35 @@ public class CsvParser implements DataParser {
             record.setYear(game.getYear());
             record.setMonth(game.getMonth());
             // refactor
-            SteamStats steamStats = SteamStats
-                .builder()
-                .steamAvgPeakPerc(game.getAveragePeakPercent())
-                .steamGainPlayers(game.getGain())
-                .steamPeakPlayers(game.getPeak())
-                .steamAveragePlayers(game.getAverage())
-                .build();
+//            SteamStats steamStats = SteamStats
+//                .builder()
+//                .steamAvgPeakPerc(game.getAveragePeakPercent())
+//                .steamGainPlayers(game.getGain())
+//                .steamPeakPlayers(game.getPeak())
+//                .steamAveragePlayers(game.getAverage())
+//                .build();
 
             //steamStats.setRecord(record);
 
-            steamStatsList.add(steamStats);
+            //steamStatsList.add(steamStats);
 
             record.setSteamAvgPeakPerc(game.getAveragePeakPercent());
             record.setSteamGainPlayers(game.getGain());
             record.setSteamPeakPlayers(game.getPeak());
             record.setSteamAveragePlayers(game.getAverage());
 
+            record = gameRecordRepository.save(record);
+
             //record.setSteamStats(steamStats);
 
             gameRecords.add(record);
 
+            GameRecord finalRecord = record;
             games.stream()
                     .filter(game1 -> game1.getGameName().equals(game.getName()))
                     .findFirst()
                     .ifPresent(game1 -> {
-                        game1.getGameRecords().add(record);
+                        game1.getGameRecords().add(finalRecord);
                     });
         });
 
@@ -293,15 +301,15 @@ public class CsvParser implements DataParser {
                             // gameRecord is existing record with steam data already inserted
                             // now we only have to add twitch data
                             gameRecord -> {
-                                TwitchStats twitchStats = getTwitchStats(twitchGame);
+                                //TwitchStats twitchStats = getTwitchStats(twitchGame);
                                 //twitchStats.setRecord(gameRecord);
 
-                                twitchStatsList.add(twitchStats);
+                                //twitchStatsList.add(twitchStats);
 
                                 gameRecord.setTwitchAvgChannels(twitchGame.getAverageChannels());
                                 gameRecord.setTwitchAvgViewers(twitchGame.getAverageViewers());
 
-
+                                gameRecord = gameRecordRepository.save(gameRecord);
                                 //gameRecord.setTwitchStats(twitchStats);
                             },
                             // gameRecord doesn't exist, adding one
@@ -319,7 +327,7 @@ public class CsvParser implements DataParser {
                                 record.setTwitchAvgViewers(twitchGame.getAverageViewers());
 
                                 //record.setTwitchStats(twitchStats);
-
+                                record = gameRecordRepository.save(record);
                                 gameRecords.add(record);
 
                                 existingGame.getGameRecords().add(record);
@@ -335,6 +343,77 @@ public class CsvParser implements DataParser {
         //twitchStatsList = twitchStatsRepository.saveAll(twitchStatsList);
         //steamStatsList = steamStatsRepository.saveAll(steamStatsList);
         gameRecords = gameRecordRepository.saveAll(gameRecords);
+        games = gameRepository.saveAll(games);
+    }
+
+    public void loadGames3(){
+        gameRepository.saveAll(games);
+        games = gameRepository.findAll();
+        System.out.println("size: " + games.size());
+
+        // Reading records based on steam records first
+        steamGames.forEach(game -> {
+            GameRecord record = new GameRecord();
+            record.setYear(game.getYear());
+            record.setMonth(game.getMonth());
+
+            record.setSteamAvgPeakPerc(game.getAveragePeakPercent());
+            record.setSteamGainPlayers(game.getGain());
+            record.setSteamPeakPlayers(game.getPeak());
+            record.setSteamAveragePlayers(game.getAverage());
+
+            games.stream()
+                    .filter(game1 -> game1.getGameName().equals(game.getName()))
+                    .findFirst()
+                    .ifPresent(game1 -> {
+                        record.setGame(game1);
+                        game1.getGameRecords().add(record);
+                    });
+        });
+
+        // next adding records from twitch
+        // because record can already exist with only
+        // steam data firstly searching for matching record
+        // if record doesn't exist creating new one
+        twitchGames.forEach(twitchGame -> {
+            games.stream()
+                .filter(game -> game.getGameName().equals(twitchGame.getTitle()))
+                .findFirst()
+                .ifPresent((existingGame -> {
+                    // existingGame is game with same name as actual record to insert
+                    existingGame.getGameRecords().stream()
+                        .filter(game ->
+                            game.getYear().equals(twitchGame.getYear()) &&
+                                    game.getMonth().equals(twitchGame.getMonth())
+                        )
+                        .findFirst()
+                        .ifPresentOrElse(
+                            // gameRecord is existing record with steam data already inserted
+                            // now we only have to add twitch data
+                            gameRecord -> {
+                                gameRecord.setTwitchAvgChannels(twitchGame.getAverageChannels());
+                                gameRecord.setTwitchAvgViewers(twitchGame.getAverageViewers());
+                                gameRecord.setGame(existingGame);
+                            },
+                            // gameRecord doesn't exist, adding one
+                            // and filling it with twitch stats
+                            () -> {
+                                GameRecord record = new GameRecord();
+                                record.setYear(twitchGame.getYear());
+                                record.setMonth(twitchGame.getMonth());
+                                record.setTwitchAvgChannels(twitchGame.getAverageChannels());
+                                record.setTwitchAvgViewers(twitchGame.getAverageViewers());
+
+                                record.setGame(existingGame);
+                                existingGame.getGameRecords().add(record);
+                            }
+                        );
+                }));
+        });
+
+
+
+        gameRepository.saveAll(games);
     }
 
     @Override

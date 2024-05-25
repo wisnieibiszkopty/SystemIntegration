@@ -31,7 +31,7 @@ public class GameService {
         return this.gameRepository.findAll(gameLimit);
     }
 
-    public Game getGameByName(String gameName) {
-        return this.gameRepository.findByGameName(gameName);
+    public List<GameRecord> getGameByName(String gameName) {
+        return this.gameRepository.findByGameName(gameName).getGameRecords();
     }
 }

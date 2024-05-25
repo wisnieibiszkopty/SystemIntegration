@@ -11,4 +11,7 @@ import java.util.List;
 public interface GameRepository extends JpaRepository<Game, Long> {
     public Game findByGameName(String gameName);
 
+    @Query("SELECT g FROM Game g JOIN FETCH g.gameRecords")
+    List<Game> findAllWithRecords();
+
 }
