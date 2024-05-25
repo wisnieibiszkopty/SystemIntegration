@@ -9,24 +9,18 @@ public class GameRecord {
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "gameName")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "game_id")
     private Game game;
 
+    @Column(name = "record_year")
     private String year;
+    @Column(name = "record_month")
     private String month;
-//    dane ze Steama
-    private double steamAveragePlayers;
-    private double steamGainPlayers;
-    private int steamPeakPlayers;
-    private String steamAvgPeakPerc;
-//    dane z Twitcha
-    private int twitchHoursWatched;
-    private int twitchHoursStreamed;
-    private int twitchPeakViewers;
-    private int twitchPeakChannels;
-    private int twitchStreamers;
-    private int twitchAvgViewers;
-    private int twitchAvgChannels;
-    private double twitchAvgViewerRatio;
+
+    @OneToOne(mappedBy = "record", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private SteamStats steamStats;
+
+    @OneToOne(mappedBy = "record", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private TwitchStats twitchStats;
 }

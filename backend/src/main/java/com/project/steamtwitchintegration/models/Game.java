@@ -13,7 +13,7 @@ public class Game {
     @GeneratedValue( strategy = GenerationType.IDENTITY)
     private Long id;
     private String gameName;
-    @OneToMany(mappedBy = "game",cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "game", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<GameRecord> gameRecords = new ArrayList<>();
 
     public void addGameRecord(GameRecord gameRecord){
