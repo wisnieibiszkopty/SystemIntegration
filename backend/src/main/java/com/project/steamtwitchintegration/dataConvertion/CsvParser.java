@@ -16,19 +16,21 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import java.io.*;
+import java.lang.reflect.Field;
 import java.util.*;
 
-@Getter
-@Setter
+
 @Slf4j
-public class CsvParser extends Parser implements DataParser {
+public class CsvParser extends Parser implements DataParser{
     String STEAM_CSV_CONDITION = "gamename";
     String TWITCH_CSV_CONDITION = "Rank";
 
-    public List<String[]> csv;
-    public String[] csvFirstRow;
+    private List<String[]> csv;
+    private String[] csvFirstRow;
 
-    @Override
+    private List<SteamGame> steamGames;
+    private List<TwitchGame> twitchGames;
+
     public void importData(String sourcePath) {
         this.csv = new ArrayList<>();
         try (CSVReader reader = new CSVReader(new FileReader(sourcePath))) {
@@ -42,7 +44,7 @@ public class CsvParser extends Parser implements DataParser {
 //        this.csv = csv.subList(1,50);
         this.csv.remove(0);
         if (csvFirstRow[0].equals(STEAM_CSV_CONDITION)) {
-            steamGames = new ArrayList<>();
+            this.steamGames = new ArrayList<>();
             for (String[] s : csv) {
                 if (s.length == 7){
                     SteamGame game = new SteamGame();
@@ -53,11 +55,12 @@ public class CsvParser extends Parser implements DataParser {
                     game.setGain(Double.parseDouble(s[4]));
                     game.setPeak(Integer.parseInt(s[5]));
                     game.setAveragePeakPercent(s[6]);
-                    steamGames.add(game);
+                    this.steamGames.add(game);
                 }
             }
+            setSteamGames(this.steamGames);
         } else if (csvFirstRow[0].equals(TWITCH_CSV_CONDITION)) {
-            twitchGames = new ArrayList<>();
+            this.twitchGames = new ArrayList<>();
             for (String[] s : csv){
                 if (s.length == 12) {
                     TwitchGame game = new TwitchGame();
@@ -72,16 +75,100 @@ public class CsvParser extends Parser implements DataParser {
                     game.setAverageViewers(Integer.parseInt(s[9]));
                     game.setAverageChannels(Integer.parseInt(s[10]));
                     game.setAverageViewerRatio(Double.parseDouble(s[11]));
-                    twitchGames.add(game);
+                    this.twitchGames.add(game);
                 }
             }
+            setTwitchGames(this.twitchGames);
         } else {
             log.error("CsvParser.importData()");
         }
     }
+    public void setupData(){
+        setGames(super.loadGames());
+    }
+    public void exportData(String destinationPath){
+        String[] headers = {
+                "game",
+                "year",
+                "month",
+                "steamAvergePlayers",
+                "steamGainPlayers",
+                "steamPeakPlayers",
+                "steamAvgPeakPerc",
+                "twitchHoursWatched",
+                "twitchHoursStreamed",
+                "twitchPeakViewers",
+                "twitchPeakChannels",
+                "twitchStreamers",
+                "twitchAvgViewers",
+                "twitchAvgChannels",
+                "twitchAvgViewerRatio"
+        };
+        try (CSVWriter writer = new CSVWriter(new FileWriter(destinationPath))) {
+            writer.writeNext(headers);
+            List<String[]> csv = new ArrayList<>();
+            for (Game game : games) {
+                for (GameRecord gameRecord : game.getGameRecords()) {
+                    String[] csvGameRecord = {
+                            game.getGameName(),
+                            gameRecord.getYear(),
+                            gameRecord.getMonth(),
+                            Double.toString(gameRecord.getSteamAveragePlayers()),
+                            Double.toString(gameRecord.getSteamGainPlayers()),
+                            Integer.toString(gameRecord.getSteamPeakPlayers()),
+                            gameRecord.getSteamAvgPeakPerc(),
+                            Integer.toString(gameRecord.getTwitchHoursWatched()),
+                            Integer.toString(gameRecord.getTwitchHoursStreamed()),
+                            Integer.toString(gameRecord.getTwitchPeakViewers()),
+                            Integer.toString(gameRecord.getTwitchPeakChannels()),
+                            Integer.toString(gameRecord.getTwitchStreamers()),
+                            Integer.toString(gameRecord.getTwitchAvgViewers()),
+                            Integer.toString(gameRecord.getTwitchAvgChannels()),
+                            Double.toString(gameRecord.getTwitchAvgViewerRatio()),
+                    };
+                    csv.add(csvGameRecord);
+                }
+            }
+            writer.writeAll(csv);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @Override
-    public void exportData(String destinationPath, Filetype filetype) {
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (String s : csvFirstRow){
+            sb.append(s).append("\t");
+        }
+        sb.append("\n");
+        for (String[] row : csv){
+            sb.append(String.join("\t",row)).append("\n");
+        }
+        return sb.toString();
+    }
+
+    /**
+     * Funkcja konwertujaca dane z Twitch.csv o miesiacu w postacji "01" na "January "
+     */
+    private String monthConvert(String month) {
+        return switch (month) {
+            case "01" -> "January ";
+            case "02" -> "February ";
+            case "03" -> "March ";
+            case "04" -> "April ";
+            case "05" -> "May ";
+            case "06" -> "June ";
+            case "07" -> "July ";
+            case "08" -> "August ";
+            case "09" -> "September ";
+            case "10" -> "October";
+            case "11" -> "November ";
+            case "12" -> "December ";
+            default -> "";
+        };
+    }
+    public void convertSetupData(String destinationPath, Filetype filetype) {
 
         switch (filetype){
             case CSV -> {
@@ -136,38 +223,5 @@ public class CsvParser extends Parser implements DataParser {
                 }
             }
         }
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        for (String s : csvFirstRow){
-            sb.append(s).append("\t");
-        }
-        sb.append("\n");
-        for (String[] row : csv){
-            sb.append(String.join("\t",row)).append("\n");
-        }
-        return sb.toString();
-    }
-    /**
-     * Funkcja konwertujaca dane z Twitch.csv o miesiacu w postacji "01" na "January "
-     */
-    private String monthConvert(String month) {
-        return switch (month) {
-            case "01" -> "January ";
-            case "02" -> "February ";
-            case "03" -> "March ";
-            case "04" -> "April ";
-            case "05" -> "May ";
-            case "06" -> "June ";
-            case "07" -> "July ";
-            case "08" -> "August ";
-            case "09" -> "September ";
-            case "10" -> "October";
-            case "11" -> "November ";
-            case "12" -> "December ";
-            default -> "";
-        };
     }
 }

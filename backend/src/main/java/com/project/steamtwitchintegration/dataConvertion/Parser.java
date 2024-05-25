@@ -4,19 +4,28 @@ import com.project.steamtwitchintegration.models.Game;
 import com.project.steamtwitchintegration.models.GameRecord;
 import com.project.steamtwitchintegration.models.SteamGame;
 import com.project.steamtwitchintegration.models.TwitchGame;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Parser {
-    public List<Game> games;
-    public List<SteamGame> steamGames;
-    public List<TwitchGame> twitchGames;
 
-    public void loadGames() {
-        games = new ArrayList<>();
+public class Parser {
+    @Getter
+    @Setter
+    public static List<Game> games;
+    @Getter
+    @Setter
+    public static List<SteamGame> steamGames;
+    @Getter
+    @Setter
+    public static List<TwitchGame> twitchGames;
+
+    public List<Game> loadGames() {
+        List<Game> temp = new ArrayList<>();
         for (SteamGame steamGame : steamGames) {
-            games.stream()
+            temp.stream()
                     .filter(game1 -> game1.getGameName().equals(steamGame.getName()))
                     .findFirst()
                     .ifPresentOrElse(
@@ -41,12 +50,12 @@ public class Parser {
                                                         && steamGame.getMonth().equals(twitchGame.getMonth())
                                         )
                                         .forEach(twitchGame -> game.addGameRecord(gameRecordInitialize(game, steamGame, twitchGame)));
-                                games.add(game);
+                                temp.add(game);
                             }
                     );
         }
 //        wybranie gier z iloscia wpisow wieksza od 10
-        games = games.stream().filter(game -> game.getGameRecords().size() > 30).toList();
+        return temp.stream().filter(game -> game.getGameRecords().size() > 30).toList();
     }
 
     private GameRecord gameRecordInitialize(Game game, SteamGame steamGame, TwitchGame twitchGame) {
@@ -69,6 +78,7 @@ public class Parser {
         return gameRecord;
     }
     public void showGames() {
+        System.out.println("ILOSC GIER: " + games.size());
         for (Game g : games) {
             if (g.getGameRecords().isEmpty()) {
                 System.out.println("\nGRA: " + g.getGameName() + " - nie posiada żadnych danych z Twitch'a!");
@@ -78,19 +88,6 @@ public class Parser {
                 for (GameRecord gameRecord : g.getGameRecords()){
                     System.out.println("DATA: " + gameRecord.getYear() + " - " + gameRecord.getMonth() + ": Srednia Widzow " + gameRecord.getTwitchAvgViewers() + ", Srednia graczy " + gameRecord.getSteamAveragePlayers());
                 }
-            }
-        }
-    }
-    public void exportData(String destinationPath, Filetype filetype) {
-        switch (filetype){
-            case CSV -> {
-//                TODO eksport danych z games do CSV
-            }
-            case JSON -> {
-//                TODO eskport danych z games do JSON
-            }
-            case XML -> {
-//                TODO eksport danych z games do XML
             }
         }
     }
