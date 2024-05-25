@@ -4,6 +4,7 @@ import com.project.steamtwitchintegration.dataConvertion.CsvParser;
 import com.project.steamtwitchintegration.dataConvertion.Filetype;
 import com.project.steamtwitchintegration.repositories.SteamGameRepository;
 import com.project.steamtwitchintegration.repositories.TwitchGameRepository;
+import com.project.steamtwitchintegration.services.IGDBService;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,31 +14,26 @@ import org.springframework.stereotype.Component;
 
 import java.nio.file.Path;
 
-// TODO wyselekcjonowac reprezentatywna grupe gier do oceny statystycznej, moga sie przydac oceny z IGN albo metacritic lub igdb
-// TODO wydzielic z twitcha gry ktore sa dostepne na steamie
-// TODO ogarnc od steama klucz do API
-// TODO ogarnac od twitcha dostep do API
 @Slf4j
 @Component
 public class DatabaseInitializer implements CommandLineRunner {
 
     private final SteamGameRepository steamRepository;
     private final TwitchGameRepository twitchRepository;
+    private final IGDBService igdbService;
 
-    public DatabaseInitializer(SteamGameRepository steamRepository, TwitchGameRepository twitchRepository) {
+    public DatabaseInitializer(SteamGameRepository steamRepository, TwitchGameRepository twitchRepository, IGDBService igdbService) {
         this.steamRepository = steamRepository;
         this.twitchRepository = twitchRepository;
+        this.igdbService = igdbService;
     }
-
-    //@Value("${twitchKey}")
-    //private String key;
 
     @Override
     public void run(String... args) throws Exception {
         CsvParser csvParser = new CsvParser();
 
         // Loading data about games from Steam
-        ClassPathResource steamResource = new ClassPathResource("data/SteamModified.csv");
+        ClassPathResource steamResource = new ClassPathResource("data/SteamCharts.csv");
         Path steamPath = steamResource.getFile().toPath();
         csvParser.importData(steamPath.toString());
 
@@ -49,7 +45,7 @@ public class DatabaseInitializer implements CommandLineRunner {
         steamRepository.saveAll(csvParser.getSteamGames());
 
         log.info("Loaded steam games");
-//        System.out.println(csvParser);
+        System.out.println(csvParser);
 
         // Loading data about games form Twitch
         ClassPathResource twitchResource = new ClassPathResource("data/Twitch_game_data.csv");
@@ -63,11 +59,16 @@ public class DatabaseInitializer implements CommandLineRunner {
         twitchRepository.saveAll(csvParser.getTwitchGames());
 
         log.info("Loaded twitch games");
-//        System.out.println(csvParser);
+        System.out.println(csvParser);
 
-//        csvParser.showgames();
+        csvParser.showgames();
 
         //log.info(key);
+
+        //igdbService.loadTwitchToken();
+        // works
+        //igdbService.sendRequest("games", "fields *; where name =\"Hollow Knight\";");
+
     }
 
 }
