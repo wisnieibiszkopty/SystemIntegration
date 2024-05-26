@@ -13,7 +13,13 @@ public class PlayerPerspective {
     private Long id;
     private String name;
 
-    @OneToMany(mappedBy = "perspective", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    //@OneToMany(mappedBy = "perspective", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @ManyToMany
+    @JoinTable(
+            name = "games_perspectives",
+            joinColumns = @JoinColumn(name = "player_perspective_id"),
+            inverseJoinColumns = @JoinColumn(name = "game_id")
+    )
     private List<Game> games;
 
     public PlayerPerspective(){}

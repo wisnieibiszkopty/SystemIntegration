@@ -16,9 +16,14 @@ public class Game {
     @OneToMany(mappedBy = "game", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<GameRecord> gameRecords = new ArrayList<>();
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "player_perspective_id")
-    private PlayerPerspective perspective;
+    private String coverUrl;
+    private double rating;
+    private int ratingCount;
+    private double totalRating;
+    private int totalRatingCount;
+
+    @ManyToMany(mappedBy = "games")
+    private List<PlayerPerspective> perspectives = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "game_genre_id")
@@ -30,5 +35,9 @@ public class Game {
 
     public void addGameRecord(GameRecord gameRecord){
         this.gameRecords.add(gameRecord);
+    }
+
+    public void addPerspective(PlayerPerspective perspective){
+        this.perspectives.add(perspective);
     }
 }
