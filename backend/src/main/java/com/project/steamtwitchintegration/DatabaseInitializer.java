@@ -26,11 +26,12 @@ public class DatabaseInitializer implements CommandLineRunner {
     private final TwitchGameRepository twitchRepository;
     private final IGDBService igdbService;
 
-    public DatabaseInitializer(SteamGameRepository steamRepository, TwitchGameRepository twitchRepository, IGDBService igdbService) {
+    public DatabaseInitializer(SteamGameRepository steamRepository, TwitchGameRepository twitchRepository, IGDBService igdbService, GameRepository gameRepository, CsvParser csvParser) {
         this.steamRepository = steamRepository;
         this.twitchRepository = twitchRepository;
         this.igdbService = igdbService;
-
+        this.gameRepository = gameRepository;
+        this.csvParser = csvParser;
     }
 
     @Override

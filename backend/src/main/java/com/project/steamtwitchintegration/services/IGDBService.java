@@ -2,6 +2,8 @@ package com.project.steamtwitchintegration.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.steamtwitchintegration.dto.TwitchToken;
+import com.project.steamtwitchintegration.models.Game;
+import com.project.steamtwitchintegration.repositories.GameRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,6 +16,8 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.List;
+
 // TODO Get list of all games and load corresponding data to them
 
 @Slf4j
@@ -22,7 +26,7 @@ public class IGDBService {
     @Autowired
     private RestTemplate restTemplate;
     private ObjectMapper objectMapper;
-    // private GameRepository gameRepository;
+    private GameRepository gameRepository;
 
     @Value("${api.client_id}")
     private String clientId;
@@ -77,5 +81,11 @@ public class IGDBService {
 
     public void loadGamesInfo(){
         // TODO Load basic info about game for every unique game in database
+        List<Game> games = gameRepository.findAll();
+
+        // load details about every game from api
+        games.forEach(game -> {
+
+        });
     }
 }
