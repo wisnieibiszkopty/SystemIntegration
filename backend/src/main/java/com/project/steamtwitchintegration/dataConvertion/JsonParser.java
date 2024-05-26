@@ -31,21 +31,6 @@ public class JsonParser implements DataParser{
     }
 
     @Override
-    public void loadGames() {
-
-    }
-
-    @Override
-    public void loadSteamGames() {
-
-    }
-
-    @Override
-    public void loadTwitchGames() {
-
-    }
-
-    @Override
     public String toString() {
         String jsonString = "";
         try {

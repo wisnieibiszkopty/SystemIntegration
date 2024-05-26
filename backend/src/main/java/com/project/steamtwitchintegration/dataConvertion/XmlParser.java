@@ -11,19 +11,4 @@ public class XmlParser implements DataParser {
     public void exportData(String destinationPath, Filetype filetype) {
 
     }
-
-    @Override
-    public void loadGames() {
-
-    }
-
-    @Override
-    public void loadSteamGames() {
-
-    }
-
-    @Override
-    public void loadTwitchGames() {
-
-    }
 }

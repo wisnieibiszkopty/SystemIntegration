@@ -12,9 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.xml.stream.XMLOutputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamWriter;
 import java.io.*;
 import java.util.*;
 
@@ -73,134 +70,6 @@ public class CsvParser implements DataParser {
 
     @Override
     public void exportData(String destinationPath, Filetype filetype) {
-
-        switch (filetype){
-            case CSV -> {
-                try (CSVWriter writer = new CSVWriter(new FileWriter(destinationPath))) {
-                    writer.writeNext(csvFirstRow);
-                    writer.writeAll(this.csv);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            case JSON -> {
-                ObjectMapper mapper = new ObjectMapper();
-                try {
-
-                    if (csvFirstRow[0].equals(STEAM_CSV_CONDITION)){
-                        mapper.writeValue(new File(destinationPath), steamGames);
-                    } else if (csvFirstRow[0].equals(TWITCH_CSV_CONDITION)) {
-                        mapper.writeValue(new File(destinationPath), twitchGames);
-                    }
-
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            case XML -> {
-                XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
-                String objectName = (csvFirstRow[0].equals(STEAM_CSV_CONDITION)) ? "SteamGamesStats" : "TwitchGamesStats";
-                try {
-                    XMLStreamWriter writer = outputFactory.createXMLStreamWriter(new FileOutputStream(destinationPath), "UTF-8");
-                    ArrayList<String> localNames = new ArrayList<>(Arrays.asList(csvFirstRow));
-
-                    writer.writeStartDocument("UTF-8", "1.0");
-                    writer.writeStartElement(objectName);
-                    for (String[] s : csv){
-                        writer.writeStartElement("Game");
-                        int i = 0;
-                        for (String temp : s){
-                            writer.writeStartElement(localNames.get(i));
-                            writer.writeCharacters(temp);
-                            writer.writeEndElement();
-                            i++;
-                        }
-                        writer.writeEndElement();
-                    }
-                    writer.writeEndElement();
-                    writer.writeEndDocument();
-                    writer.flush();
-                    writer.close();
-
-                } catch (XMLStreamException | FileNotFoundException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }
-    }
-
-//  private GameRecord gameRecordInitialize(Game game, SteamGame steamGame, TwitchGame twitchGame) {
-//        GameRecord gameRecord = new GameRecord();
-//        gameRecord.setGame(game);
-//        gameRecord.setYear(steamGame.getYear());
-//        gameRecord.setMonth(steamGame.getMonth());
-//        gameRecord.setSteamAveragePlayers(steamGame.getAverage());
-//        gameRecord.setSteamGainPlayers(steamGame.getGain());
-//        gameRecord.setSteamPeakPlayers(steamGame.getPeak());
-//        gameRecord.setSteamAvgPeakPerc(steamGame.getAveragePeakPercent());
-//        gameRecord.setTwitchHoursWatched(twitchGame.getHoursWatched());
-//        gameRecord.setTwitchHoursStreamed(twitchGame.getHoursStreamed());
-//        gameRecord.setTwitchPeakViewers(twitchGame.getPeakViewers());
-//        gameRecord.setTwitchPeakChannels(twitchGame.getPeakChannels());
-//        gameRecord.setTwitchStreamers(twitchGame.getStreamers());
-//        gameRecord.setTwitchAvgViewers(twitchGame.getAverageViewers());
-//        gameRecord.setTwitchAvgChannels(twitchGame.getAverageChannels());
-//        gameRecord.setTwitchAvgViewerRatio(twitchGame.getAverageViewerRatio());
-//        return gameRecord;
-//      return null;
-//    }
-
-    @Override
-    public void loadGames() {
-        log.info("Steam games count: " + steamGames.size());
-        log.info("Twitch games count: " + twitchGames.size());
-        for (SteamGame steamGame : steamGames) {
-            games.stream()
-                    .filter(game1 -> game1.getGameName().equals(steamGame.getName()))
-                    .findFirst()
-                    .ifPresentOrElse(
-                    (game1) -> {
-//                        dodanie GameRecord do istniejacego obiektu
-//                        twitchGames.stream()
-//                                .filter(twitchGame ->
-//                                    game1.getGameName().equals(twitchGame.getTitle())
-//                                    && twitchGame.getYear().equals(steamGame.getYear())
-//                                    && steamGame.getMonth().equals(twitchGame.getMonth())
-//                                )
-//                                .forEach(twitchGame -> game1.addGameRecord(gameRecordInitialize(game1, steamGame, twitchGame)));
-                    },
-                    () -> {
-//                        stworzenie nowego obiektu i dodanie GameRecord
-                        Game game = new Game();
-                        game.setGameName(steamGame.getName());
-                        // testing without records
-                        twitchGames.stream()
-                            .filter(twitchGame ->
-                                game.getGameName().equals(twitchGame.getTitle())
-                                    && twitchGame.getYear().equals(steamGame.getYear())
-                                    && steamGame.getMonth().equals(twitchGame.getMonth())
-                            )
-                            .forEach(twitchGame -> {
-//                                GameRecord record = gameRecordInitialize(game, steamGame, twitchGame);
-//                                System.out.println(record);
-//                                game.addGameRecord(record);
-                            });
-                        games.add(game);
-                    }
-            );
-        }
-
-//        for (Game g : games) {
-//            if (g.getGameRecords().isEmpty()) {
-//                System.out.println("\nGRA: " + g.getGameName() + " - nie posiada żadnych danych z Twitch'a!");
-//            } else {
-//                System.out.println("\n\tGRA:" + g.getGameName());
-//                System.out.println("Ilość wpisów z Twitcha: " + g.getGameRecords().size());
-//                for (GameRecord gameRecord : g.getGameRecords()){
-//                    System.out.println("DATA: " + gameRecord.getYear() + " - " + gameRecord.getMonth() + ": Srednia Widzow " + gameRecord.getTwitchAvgViewers() + ", Srednia graczy " + gameRecord.getSteamAveragePlayers());
-//                }
-//            }
-//        }
     }
 
     public TwitchStats getTwitchStats(TwitchGame twitchGame){
@@ -323,7 +192,6 @@ public class CsvParser implements DataParser {
         return sb.toString();
     }
 
-    @Override
     public void loadSteamGames(){
         this.steamGames = new ArrayList<>();
         for (String[] s : csv) {
@@ -341,7 +209,6 @@ public class CsvParser implements DataParser {
             }
         }
     }
-    @Override
     public void loadTwitchGames(){
         this.twitchGames = new ArrayList<>();
         for (String[] s : csv){
