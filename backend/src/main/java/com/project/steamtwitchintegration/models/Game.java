@@ -16,6 +16,18 @@ public class Game {
     @OneToMany(mappedBy = "game", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<GameRecord> gameRecords = new ArrayList<>();
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "player_perspective_id")
+    private PlayerPerspective perspective;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "game_genre_id")
+    private GameGenre genre;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "game_mode_id")
+    private GameMode mode;
+
     public void addGameRecord(GameRecord gameRecord){
         this.gameRecords.add(gameRecord);
     }
