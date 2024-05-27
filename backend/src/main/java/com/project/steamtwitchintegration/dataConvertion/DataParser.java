@@ -1,16 +1,20 @@
 package com.project.steamtwitchintegration.dataConvertion;
 
+import com.project.steamtwitchintegration.models.Game;
+
+import java.util.List;
+
 public interface DataParser {
     /**
-     * Funkcja wczytująca dane z pliku
-     * @param sourcePath ścieżka odczytu
+     * Function importing data from file
+     * @param sourcePath file to read path
      */
     void importData(String sourcePath);
 
     /**
-     * Funkcja zapisujaca dane do pliku
-     * @param destinationPath ścieżka zapisu
-     * @param filetype format zapisu
+     * Function saving Game objects to file
+     * @param destinationPath file to write path
+     * @param gamesToExport List of Game objects to save
      */
-    void exportData(String destinationPath, Filetype filetype);
+    void exportData(String destinationPath, List<Game> gamesToExport);
 }

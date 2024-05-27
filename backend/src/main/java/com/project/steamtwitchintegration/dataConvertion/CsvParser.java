@@ -1,41 +1,21 @@
 package com.project.steamtwitchintegration.dataConvertion;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 import com.opencsv.exceptions.CsvException;
 import com.project.steamtwitchintegration.models.*;
-import com.project.steamtwitchintegration.repositories.GameRepository;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.util.*;
 
-@Getter
-@Setter
-@Slf4j
-@Service
-public class CsvParser implements DataParser {
-    public List<Game> games = new ArrayList<>();
-
+public class CsvParser extends Parser implements DataParser {
     String STEAM_CSV_CONDITION = "gamename";
     String TWITCH_CSV_CONDITION = "Rank";
-
     public List<String[]> csv;
     public String[] csvFirstRow;
-    public List<SteamGame> steamGames;
-    public List<TwitchGame> twitchGames;
-
-    @Autowired
-    private GameRepository gameRepository;
 
     @Override
     public void importData(String sourcePath) {
-        this.games = new ArrayList<>();
         this.csv = new ArrayList<>();
         try (CSVReader reader = new CSVReader(new FileReader(sourcePath))) {
             this.csv = reader.readAll();
@@ -52,131 +32,63 @@ public class CsvParser implements DataParser {
         } else if (csvFirstRow[0].equals(TWITCH_CSV_CONDITION)) {
             loadTwitchGames();
         } else {
-            log.error("CsvParser.importData()");
+            System.out.println("CsvParser.importData() error");
         }
     }
-
-    private void addGameByName(String name){
-        if(games.stream().anyMatch(game -> game.getGameName().equals(name))){
-            //log.info("Game already exists");
-            return;
-        }
-
-        Game game = new Game();
-        game.setGameName(name);
-        games.add(game);
-        log.info("Added: " + game.getGameName());
-    }
-
     @Override
-    public void exportData(String destinationPath, Filetype filetype) {
-    }
+    public void exportData(String destinationPath, List<Game> gamesToExport) {
+        gamesToExport = gamesToExport.subList(0,5);
+        String[] headers = {
+                "game",
+                "year",
+                "month",
+                "steamAvergePlayers",
+                "steamGainPlayers",
+                "steamPeakPlayers",
+                "steamAvgPeakPerc",
+                "twitchHoursWatched",
+                "twitchHoursStreamed",
+                "twitchPeakViewers",
+                "twitchPeakChannels",
+                "twitchStreamers",
+                "twitchAvgViewers",
+                "twitchAvgChannels",
+                "twitchAvgViewerRatio"
+        };
+        try (CSVWriter writer = new CSVWriter(new FileWriter(destinationPath))) {
+            writer.writeNext(headers);
+            List<String[]> csv = new ArrayList<>();
+            for (Game game : gamesToExport) {
+                for (GameRecord gameRecord : game.getGameRecords()) {
+                    SteamStats steamStats = gameRecord.getSteamStats();
+                    TwitchStats twitchStats = gameRecord.getTwitchStats();
+                    String[] csvGameRecord = {
 
-    public TwitchStats getTwitchStats(TwitchGame twitchGame){
-        return TwitchStats
-                .builder()
-                .twitchAvgChannels(twitchGame.getAverageChannels())
-                .twitchAvgViewers(twitchGame.getAverageViewers())
-                .twitchHoursStreamed(twitchGame.getHoursStreamed())
-                .twitchHoursWatched(twitchGame.getHoursWatched())
-                .twitchPeakChannels(twitchGame.getPeakChannels())
-                .twitchPeakViewers(twitchGame.getPeakViewers())
-                .twitchStreamers(twitchGame.getStreamers())
-                .twitchAvgViewerRatio(twitchGame.getAverageViewerRatio())
-                .build();
-    }
+                            game.getGameName(),
+                            gameRecord.getYear(),
+                            gameRecord.getMonth(),
 
-    public SteamStats getSteamStats(SteamGame steamGame){
-        return SteamStats
-                .builder()
-                .steamAveragePlayers(steamGame.getAverage())
-                .steamPeakPlayers(steamGame.getPeak())
-                .steamAvgPeakPerc(steamGame.getAveragePeakPercent())
-                .steamGainPlayers(steamGame.getGain())
-                .build();
-    }
+                            Double.toString(steamStats.getSteamAveragePlayers()),
+                            Double.toString(steamStats.getSteamGainPlayers()),
+                            Integer.toString(steamStats.getSteamPeakPlayers()),
+                            steamStats.getSteamAvgPeakPerc(),
 
-    public void loadGames3(){
-        log.info("Deleting redundant positions");
-        // check if game with this name exist both in steam and twitch data
-        // if not delete it
-        games = games.stream().filter(game ->
-            steamGames.stream()
-                .anyMatch(steamGame -> steamGame
-                    .getName()
-                    .equals(game.getGameName()))
-            && twitchGames.stream()
-                .anyMatch(twitchGame -> twitchGame
-                    .getTitle()
-                    .equals(game.getGameName()))
-        ).toList();
-        log.info("Deleted games");
-
-        gameRepository.saveAll(games);
-        games = gameRepository.findAll();
-
-        log.info("Started adding game records");
-        // Reading records based on steam records first
-        steamGames.forEach(game -> {
-            GameRecord record = new GameRecord();
-            record.setYear(game.getYear());
-            record.setMonth(game.getMonth());
-
-            games.stream()
-                    .filter(game1 -> game1.getGameName().equals(game.getName()))
-                    .findFirst()
-                    .ifPresent(game1 -> {
-                        record.setGame(game1);
-                        SteamStats steamStats = getSteamStats(game);
-                        steamStats.setRecord(record);
-                        record.setSteamStats(steamStats);
-                        game1.getGameRecords().add(record);
-                    });
-        });
-
-        // next adding records from twitch
-        // because record can already exist with only
-        // steam data firstly searching for matching record
-        // if record doesn't exist creating new one
-        twitchGames.forEach(twitchGame -> {
-            games.stream()
-                .filter(game -> game.getGameName().equals(twitchGame.getTitle()))
-                .findFirst()
-                .ifPresent((existingGame -> {
-                    // existingGame is game with same name as actual record to insert
-                    existingGame.getGameRecords().stream()
-                        .filter(game ->
-                            game.getYear().equals(twitchGame.getYear()) &&
-                                    game.getMonth().equals(twitchGame.getMonth())
-                        )
-                        .findFirst()
-                        .ifPresentOrElse(
-                            // gameRecord is existing record with steam data already inserted
-                            // now we only have to add twitch data
-                            gameRecord -> {
-                                TwitchStats twitchStats = getTwitchStats(twitchGame);
-                                twitchStats.setRecord(gameRecord);
-                                gameRecord.setTwitchStats(twitchStats);
-                                gameRecord.setGame(existingGame);
-                            },
-                            // gameRecord doesn't exist, adding one
-                            // and filling it with twitch stats
-                            () -> {
-                                GameRecord record = new GameRecord();
-                                record.setYear(twitchGame.getYear());
-                                record.setMonth(twitchGame.getMonth());
-                                TwitchStats twitchStats = getTwitchStats(twitchGame);
-                                twitchStats.setRecord(record);
-                                record.setTwitchStats(twitchStats);
-                                record.setGame(existingGame);
-                                existingGame.getGameRecords().add(record);
-                            }
-                        );
-                }));
-        });
-
-        gameRepository.saveAll(games);
-        log.info("Finished adding game records");
+                            Integer.toString(twitchStats.getTwitchHoursWatched()),
+                            Integer.toString(twitchStats.getTwitchHoursStreamed()),
+                            Integer.toString(twitchStats.getTwitchPeakViewers()),
+                            Integer.toString(twitchStats.getTwitchPeakChannels()),
+                            Integer.toString(twitchStats.getTwitchStreamers()),
+                            Integer.toString(twitchStats.getTwitchAvgViewers()),
+                            Integer.toString(twitchStats.getTwitchAvgChannels()),
+                            Double.toString(twitchStats.getTwitchAvgViewerRatio()),
+                    };
+                    csv.add(csvGameRecord);
+                }
+            }
+            writer.writeAll(csv);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -193,7 +105,7 @@ public class CsvParser implements DataParser {
     }
 
     public void loadSteamGames(){
-        this.steamGames = new ArrayList<>();
+        setSteamGames(new ArrayList<>());
         for (String[] s : csv) {
             if (s.length == 7){
                 SteamGame game = new SteamGame();
@@ -204,13 +116,13 @@ public class CsvParser implements DataParser {
                 game.setGain(Double.parseDouble(s[4]));
                 game.setPeak(Integer.parseInt(s[5]));
                 game.setAveragePeakPercent(s[6]);
-                this.steamGames.add(game);
+                steamGames.add(game);
                 addGameByName(game.getName());
             }
         }
     }
     public void loadTwitchGames(){
-        this.twitchGames = new ArrayList<>();
+        setTwitchGames(new ArrayList<>());
         for (String[] s : csv){
             if (s.length == 12) {
                 TwitchGame game = new TwitchGame();
@@ -232,7 +144,7 @@ public class CsvParser implements DataParser {
     }
 
     /**
-     * Funkcja konwertujaca dane z Twitch.csv o miesiacu w postacji "01" na "January "
+     * Function convert month from format "01" to "January " etc.
      */
     private String monthConvert(String month) {
         return switch (month) {
@@ -245,7 +157,7 @@ public class CsvParser implements DataParser {
             case "07" -> "July ";
             case "08" -> "August ";
             case "09" -> "September ";
-            case "10" -> "October";
+            case "10" -> "October ";
             case "11" -> "November ";
             case "12" -> "December ";
             default -> "";
