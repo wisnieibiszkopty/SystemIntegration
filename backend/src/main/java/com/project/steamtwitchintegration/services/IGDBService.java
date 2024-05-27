@@ -1,9 +1,15 @@
 package com.project.steamtwitchintegration.services;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.steamtwitchintegration.dto.TwitchToken;
-import com.project.steamtwitchintegration.models.Game;
+import com.project.steamtwitchintegration.models.*;
+import com.project.steamtwitchintegration.repositories.GameGenreRepository;
+import com.project.steamtwitchintegration.repositories.GameModeRepository;
 import com.project.steamtwitchintegration.repositories.GameRepository;
+import com.project.steamtwitchintegration.repositories.PlayerPerspectiveRepository;
+import jakarta.persistence.EntityManager;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,6 +23,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 // TODO Get list of all games and load corresponding data to them
 
@@ -25,8 +32,13 @@ import java.util.List;
 public class IGDBService {
     @Autowired
     private RestTemplate restTemplate;
+    @Autowired
+    private EntityManager em;
     private ObjectMapper objectMapper;
     private GameRepository gameRepository;
+    private PlayerPerspectiveRepository perspectiveRepository;
+    private GameGenreRepository genreRepository;
+    private GameModeRepository modeRepository;
 
     @Value("${api.client_id}")
     private String clientId;
@@ -37,8 +49,17 @@ public class IGDBService {
     private final String twitchUrl = "https://id.twitch.tv/oauth2/token";
     private TwitchToken token;
 
-    public IGDBService(ObjectMapper objectMapper) {
+    public IGDBService(
+            ObjectMapper objectMapper,
+            GameRepository gameRepository,
+            PlayerPerspectiveRepository perspectiveRepository,
+            GameGenreRepository genreRepository,
+            GameModeRepository modeRepository) {
         this.objectMapper = objectMapper;
+        this.gameRepository = gameRepository;
+        this.perspectiveRepository = perspectiveRepository;
+        this.genreRepository = genreRepository;
+        this.modeRepository = modeRepository;
     }
 
     public void loadTwitchToken(){
@@ -63,29 +84,168 @@ public class IGDBService {
         }
     }
 
-    public void sendRequest(String url, String body){
+    /**
+     * https://api-docs.igdb.com/#endpoints
+     * Valid endpoint can be chosen from this website
+     * Valid body is also specified in api docs
+     * General info can be obtained with "fields *;"
+     */
+    public JsonNode sendRequest(String endpoint, String body){
         HttpHeaders headers = new HttpHeaders();
         headers.set("Client-ID", clientId);
         headers.set("Authorization", "Bearer " + token.getAccessToken());
         HttpEntity<Object> request = new HttpEntity<>(body, headers);
 
         try {
-            String response = restTemplate
-                .exchange(baseUrl + url, HttpMethod.POST, request, String.class)
+            JsonNode response = restTemplate
+                .exchange(baseUrl + endpoint, HttpMethod.POST, request, JsonNode.class)
                 .getBody();
             System.out.println(response);
+            return response;
         } catch(HttpClientErrorException e){
             log.error("Http client exception: " + e);
         }
+
+        // 🤡🤡🤡
+        return null;
     }
 
+    // over engineering
+//    public void loadGameGeneralInfo(String endpoint, Loadable object){
+//        log.info("Loading " + endpoint);
+//        JsonNode nodes = sendRequest(endpoint, "fields name;");
+//        if(nodes != null && nodes.isArray()){
+//            for(JsonNode node: nodes){
+////                object.setId(node.get("id").asLong());
+////                object.setName(node.get("name").asText());
+//                em.persist(object);
+//            }
+//        }
+//        log.info("Finished loading " + endpoint);
+//    }
+
+    // TODO refactor
+    public void loadGameGeneralInfo(){
+        log.info("Loading game modes info...");
+
+        JsonNode gameModesResponse = sendRequest("game_modes","fields name;");
+        if(gameModesResponse != null && gameModesResponse.isArray()){
+            for(JsonNode gameMode: gameModesResponse){
+                GameMode mode = new GameMode(
+                     gameMode.get("id").asLong(),
+                     gameMode.get("name").asText()
+                );
+                em.persist(mode);
+            }
+        }
+
+        log.info("Finished loading game modes info");
+
+        // not sure if this endpoint provides every genre
+        log.info("Loading game genres...");
+        JsonNode gameGenres = sendRequest("genres", "fields name;");
+        if(gameGenres != null && gameGenres.isArray()){
+            for(JsonNode gameGenre: gameGenres){
+                GameGenre genre = new GameGenre(
+                        gameGenre.get("id").asLong(),
+                        gameGenre.get("name").asText()
+                );
+                em.persist(genre);
+            }
+        }
+        log.info("Finished loading game genres");
+
+        log.info("Loading player perspectives...");
+        JsonNode playerPerspectives = sendRequest("player_perspectives","fields name;");
+        if(playerPerspectives != null && playerPerspectives.isArray()){
+            for(JsonNode playerPerspective: playerPerspectives){
+                PlayerPerspective perspective = new PlayerPerspective(
+                    playerPerspective.get("id").asLong(),
+                    playerPerspective.get("name").asText()
+                );
+                em.persist(perspective);
+            }
+        }
+        log.info("Finished loading player perspectives");
+    }
+
+    // maybe can be done with one request
+
+    // m.addGame(game) throws stack overflow
+    // something is very wrong with gta data
+    // and rust, seems that api returns more than one game
+    // and games can have different info return, gta is lacking ratings
     public void loadGamesInfo(){
         // TODO Load basic info about game for every unique game in database
-        List<Game> games = gameRepository.findAll();
+        List<Game> games = gameRepository.findAll().subList(0, 2);
+        System.out.println("count: " + games.size());
+        String bodyGeneral = "fields cover, game_modes, genres, player_perspectives, rating, rating_count, total_rating, total_rating_count; where name = \"";
 
         // load details about every game from api
-        games.forEach(game -> {
+        // int i = 0;
+        for(Game game : games){
+            String body =
+                bodyGeneral
+                + game.getGameName() + "\";";
+            System.out.println(body);
 
-        });
+            JsonNode jsonResponse = sendRequest("games", body);
+            // returns array with one element
+            JsonNode gameInfo = jsonResponse.get(0);
+            System.out.println(gameInfo);
+
+            // setting basic info
+            game.setRating(gameInfo.get("rating").asDouble());
+            game.setRatingCount(gameInfo.get("rating_count").asInt());
+            game.setTotalRating(gameInfo.get("total_rating").asDouble());
+            game.setTotalRatingCount(gameInfo.get("total_rating_count").asInt());
+
+            // load url based on received cover id
+            JsonNode coverResponse = sendRequest("covers", "fields url; where id = " + gameInfo.get("cover") + ";");
+            for(JsonNode coverInfo: coverResponse){
+                String coverUrl = coverInfo.get("url").asText().replace("t_thumb", "t_cover_big");
+                game.setCoverUrl(coverUrl);
+            }
+
+            // setting many-to-many relationships
+            // perspective
+            JsonNode perspectiveNode = gameInfo.get("player_perspectives");
+            List<Long> perspectivesList = objectMapper.convertValue(perspectiveNode, new TypeReference<List<Long>>() {});
+            log.info(perspectivesList.toString());
+            List<PlayerPerspective> perspectives = perspectiveRepository.findAllById(perspectivesList).stream().toList();
+            perspectives.forEach(p -> {
+                log.info(p.toString());
+                p.addGame(game);
+                game.addPerspective(p);
+            });
+
+            // game genres
+            JsonNode genreNode = gameInfo.get("genres");
+            List<Long> genresList = objectMapper.convertValue(genreNode, new TypeReference<List<Long>>() {});
+            log.info(genresList.toString());
+            List<GameGenre> genres = genreRepository.findAllById(genresList).stream().toList();
+            genres.forEach(g -> {
+                log.info(g.toString());
+                //g.addGame(game);
+                game.addGenre(g);
+            });
+
+            // game modes
+            JsonNode modeNode = gameInfo.get("game_modes");
+            List<Long> modesList = objectMapper.convertValue(modeNode, new TypeReference<List<Long>>() {});
+            log.info(modesList.toString());
+            List<GameMode> modes = modeRepository.findAllById(modesList).stream().toList();
+            modes.forEach(m -> {
+                log.info(m.toString());
+                // throws stack overflow, cannot add game modes
+                // not work only with specific data
+                m.addGame(game);
+                game.addMode(m);
+            });
+
+        }
+
+        gameRepository.saveAll(games);
     }
 }
+

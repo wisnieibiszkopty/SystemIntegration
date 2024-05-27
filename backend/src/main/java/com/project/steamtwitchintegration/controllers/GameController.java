@@ -36,8 +36,14 @@ public class GameController {
         return this.gameService.getLimitedGames(limit);
     }
 
+    @GetMapping("/{id}")
+    public Game getGameById(@PathVariable Long id){
+        return this.gameService.getGameById(id);
+    }
+
+
     @Operation
-    @GetMapping("/{name}")
+    @GetMapping("name/{name}")
     public List<GameRecord> getGame(@PathVariable String name) {
         return gameService.getGameByName(name);
     }

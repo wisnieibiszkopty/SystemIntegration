@@ -48,7 +48,6 @@ public class CsvParser implements DataParser {
 //        odcina pierwszy wiersz z nagłówkiem
         csvFirstRow = this.csv.get(0);
 //        ucina pierwszy wiersz ( z nagłówkami ) i bierze tylko do  n-tego ( do testów aby mniej mieliło )
-        //this.csv = csv.subList(1,500);
         this.csv.remove(0);
         if (csvFirstRow[0].equals(STEAM_CSV_CONDITION)) {
             loadSteamGames();
