@@ -1,12 +1,17 @@
 package com.project.steamtwitchintegration.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Getter
+@ToString
 public class PlayerPerspective {
 
     @Id
@@ -20,12 +25,17 @@ public class PlayerPerspective {
             joinColumns = @JoinColumn(name = "player_perspective_id"),
             inverseJoinColumns = @JoinColumn(name = "game_id")
     )
-    private List<Game> games;
+    @JsonBackReference
+    private List<Game> games = new ArrayList<>();
 
     public PlayerPerspective(){}
 
     public PlayerPerspective(Long id, String name) {
         this.id = id;
         this.name = name;
+    }
+
+    public void addGame(Game game){
+        this.games.add(game);
     }
 }

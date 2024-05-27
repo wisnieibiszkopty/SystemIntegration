@@ -31,6 +31,10 @@ public class GameService {
         return this.gameRepository.findAll(gameLimit);
     }
 
+    public Game getGameById(Long id){
+        return this.gameRepository.findById(id).orElseThrow();
+    }
+
     public List<GameRecord> getGameByName(String gameName) {
         return this.gameRepository.findByGameName(gameName).getGameRecords();
     }

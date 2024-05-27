@@ -1,5 +1,6 @@
 package com.project.steamtwitchintegration.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -23,6 +24,7 @@ public class SteamStats {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "gameRecord_id")
+    @JsonBackReference
     private GameRecord record;
 
 }
