@@ -14,6 +14,7 @@ public class Game {
     @GeneratedValue( strategy = GenerationType.IDENTITY)
     private Long id;
     private String gameName;
+
     @OneToMany(mappedBy = "game", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JsonManagedReference
     private List<GameRecord> gameRecords = new ArrayList<>();
@@ -28,14 +29,10 @@ public class Game {
     @JsonManagedReference
     private List<PlayerPerspective> perspectives = new ArrayList<>();
 
-//    @ManyToOne(fetch = FetchType.EAGER)
-//    @JoinColumn(name = "game_genre_id")
     @ManyToMany(mappedBy = "games")
     @JsonManagedReference
     private List<GameGenre> genres = new ArrayList<>();
 
-//    @ManyToOne(fetch = FetchType.EAGER)
-//    @JoinColumn(name = "game_mode_id")
     @ManyToMany(mappedBy = "games")
     @JsonManagedReference
     private List<GameMode> modes = new ArrayList<>();

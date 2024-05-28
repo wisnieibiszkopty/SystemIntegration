@@ -42,8 +42,8 @@ public class DatabaseInitializer implements CommandLineRunner {
     @Transactional
     public void run(String... args) throws Exception {
         // expensvie methods
-        igdbService.loadTwitchToken();
-        igdbService.loadGameGeneralInfo();
+        //igdbService.loadTwitchToken();
+        //igdbService.loadGameGeneralInfo();
 
         //CsvParser csvParser = new CsvParser();
         ClassPathResource steamFile = new ClassPathResource("data/SteamModified.csv");
@@ -58,7 +58,7 @@ public class DatabaseInitializer implements CommandLineRunner {
         //gameRepository.saveAll(csvParser.getGames());
 
         // expensive method
-        igdbService.loadGamesInfo();
+        //igdbService.loadGamesInfo();
     }
 
     public void loadGeneralGamesData(){
