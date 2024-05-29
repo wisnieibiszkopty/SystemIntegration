@@ -1,22 +1,103 @@
 package com.project.steamtwitchintegration.dataConvertion;
 
-import com.project.steamtwitchintegration.models.Game;
-import com.project.steamtwitchintegration.models.GameRecord;
-import com.project.steamtwitchintegration.models.SteamStats;
-import com.project.steamtwitchintegration.models.TwitchStats;
+import com.project.steamtwitchintegration.models.*;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.File;
+
 public class XmlParser extends Parser implements DataParser{
+    String STEAM_XML_CONDITION = "SteamGamesStats";
+    String TWITCH_XML_CONDITION = "TwitchGamesStats";
 
     @Override
     public void importData(String sourcePath) {
+        try {
+            File xmlToImport = new File(sourcePath);
+            DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+            Document document = documentBuilder.parse(xmlToImport);
+//            document.getDocumentElement().normalize();
 
+
+            // check what type of data needs to be imported
+            Element rootElement = document.getDocumentElement();
+
+            if (rootElement.getNodeName().equals(STEAM_XML_CONDITION)) {
+                NodeList gameList = document.getElementsByTagName("Game");
+                setSteamGames(new ArrayList<>());
+                for (int i=0; i<gameList.getLength(); i++){
+                    Node gameNode = gameList.item(i);
+                    if (gameNode.getNodeType() == Node.ELEMENT_NODE){
+                        Element gameElement = (Element) gameNode;
+                        SteamGame steamGame = new SteamGame();
+                        steamGame.setName(gameElement.getElementsByTagName("gamename").item(0).getTextContent());
+                        steamGame.setYear(gameElement.getElementsByTagName("year").item(0).getTextContent());
+                        steamGame.setMonth(gameElement.getElementsByTagName("month").item(0).getTextContent());
+                        steamGame.setAverage(Double.parseDouble(gameElement.getElementsByTagName("avg").item(0).getTextContent()));
+                        steamGame.setGain(Double.parseDouble(gameElement.getElementsByTagName("gain").item(0).getTextContent()));
+                        steamGame.setPeak(Integer.parseInt(gameElement.getElementsByTagName("peak").item(0).getTextContent()));
+                        steamGame.setAveragePeakPercent(gameElement.getElementsByTagName("avg_peak_perc").item(0).getTextContent());
+                        System.out.println(steamGame.getName());
+                        steamGames.add(steamGame);
+                    }
+                }
+            } else if (rootElement.getNodeName().equals(TWITCH_XML_CONDITION)) {
+                NodeList gameList = document.getElementsByTagName("TwitchGame");
+                setTwitchGames(new ArrayList<>());
+                for (int i=0; i<gameList.getLength(); i++) {
+                    Node gameNode = gameList.item(i);
+                    if (gameNode.getNodeType() == Node.ELEMENT_NODE) {
+                        Element gameElement = (Element) gameNode;
+                        TwitchGame twitchGame = new TwitchGame();
+                        twitchGame.setTitle(gameElement.getElementsByTagName("Game").item(0).getTextContent());
+                        twitchGame.setMonth(gameElement.getElementsByTagName("Month").item(0).getTextContent());
+                        twitchGame.setYear(gameElement.getElementsByTagName("Year").item(0).getTextContent());
+                        twitchGame.setHoursWatched(Integer.parseInt(gameElement.getElementsByTagName("Hours_watched").item(0).getTextContent()));
+                        twitchGame.setHoursStreamed(Integer.parseInt(gameElement.getElementsByTagName("Hours_streamed").item(0).getTextContent()));
+                        twitchGame.setPeakViewers(Integer.parseInt(gameElement.getElementsByTagName("Peak_viewers").item(0).getTextContent()));
+                        twitchGame.setPeakChannels(Integer.parseInt(gameElement.getElementsByTagName("Peak_channels").item(0).getTextContent()));
+                        twitchGame.setStreamers(Integer.parseInt(gameElement.getElementsByTagName("Streamers").item(0).getTextContent()));
+                        twitchGame.setAverageViewers(Integer.parseInt(gameElement.getElementsByTagName("Avg_viewers").item(0).getTextContent()));
+                        twitchGame.setAverageChannels(Integer.parseInt(gameElement.getElementsByTagName("Avg_channels").item(0).getTextContent()));
+                        twitchGame.setAverageViewerRatio(Double.parseDouble(gameElement.getElementsByTagName("Avg_viewer_ratio").item(0).getTextContent()));
+                        System.out.println(twitchGame.getTitle());
+                        twitchGames.add(twitchGame);
+                    }
+                }
+            }
+        } catch (ParserConfigurationException | SAXException | IOException e) {
+            throw new RuntimeException(e);
+        }
     }
     @Override
     public void exportData(String destinationPath, List<Game> gamesToExport) {

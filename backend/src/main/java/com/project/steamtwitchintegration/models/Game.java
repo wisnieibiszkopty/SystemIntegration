@@ -2,6 +2,7 @@ package com.project.steamtwitchintegration.models;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +15,7 @@ public class Game {
     private Long id;
     private String gameName;
     @OneToMany(mappedBy = "game", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JsonManagedReference
     private List<GameRecord> gameRecords = new ArrayList<>();
 
     public void addGameRecord(GameRecord gameRecord){

@@ -5,6 +5,9 @@ import com.opencsv.CSVWriter;
 import com.opencsv.exceptions.CsvException;
 import com.project.steamtwitchintegration.models.*;
 
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 import java.io.*;
 import java.util.*;
 
@@ -13,7 +16,6 @@ public class CsvParser extends Parser implements DataParser {
     String TWITCH_CSV_CONDITION = "Rank";
     public List<String[]> csv;
     public String[] csvFirstRow;
-
     @Override
     public void importData(String sourcePath) {
         this.csv = new ArrayList<>();
@@ -117,7 +119,7 @@ public class CsvParser extends Parser implements DataParser {
                 game.setPeak(Integer.parseInt(s[5]));
                 game.setAveragePeakPercent(s[6]);
                 steamGames.add(game);
-                addGameByName(game.getName());
+//                addGameByName(game.getName());
             }
         }
     }
@@ -138,7 +140,7 @@ public class CsvParser extends Parser implements DataParser {
                 game.setAverageChannels(Integer.parseInt(s[10]));
                 game.setAverageViewerRatio(Double.parseDouble(s[11]));
                 twitchGames.add(game);
-                addGameByName(game.getTitle());
+//                addGameByName(game.getTitle());
             }
         }
     }

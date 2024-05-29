@@ -1,6 +1,7 @@
 package com.project.steamtwitchintegration.models;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 
 @Data
@@ -19,8 +20,10 @@ public class GameRecord {
     private String month;
 
     @OneToOne(mappedBy = "record", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
     private SteamStats steamStats;
 
     @OneToOne(mappedBy = "record", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
     private TwitchStats twitchStats;
 }

@@ -72,6 +72,7 @@ public class Parser {
                     )
                     .findFirst()
                     .ifPresent(twitchGame -> {
+                        addGameByName(twitchGame.getTitle());
                         record.setYear(steamGame.getYear());
                         record.setMonth(steamGame.getMonth());
 
@@ -96,7 +97,7 @@ public class Parser {
         });
         long endTime = System.nanoTime();
 
-//        szybsze od stream.filter ale minimalnie wolniejszy of for 
+//        szybsze od stream.filter ale minimalnie wolniejszy of for
         games.removeIf(game -> game.getGameRecords().size() < 5);
         System.out.println("CZAS: " + (endTime-startTime) / 1e9 );
         gameRepository.saveAll(games);
