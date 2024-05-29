@@ -1,29 +1,15 @@
 package com.project.steamtwitchintegration;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.project.steamtwitchintegration.dataConvertion.CsvParser;
-import com.project.steamtwitchintegration.dataConvertion.Filetype;
-import com.project.steamtwitchintegration.models.GameGenre;
-import com.project.steamtwitchintegration.models.GameMode;
-import com.project.steamtwitchintegration.models.PlayerPerspective;
 import com.project.steamtwitchintegration.repositories.GameRepository;
-import com.project.steamtwitchintegration.repositories.SteamGameRepository;
-import com.project.steamtwitchintegration.repositories.TwitchGameRepository;
 import com.project.steamtwitchintegration.services.IGDBService;
-import jakarta.persistence.EntityManager;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
 
 @Slf4j
 @Component

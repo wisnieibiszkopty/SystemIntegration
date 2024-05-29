@@ -3,9 +3,19 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 
+import { getGames } from "./api/services/Game.ts"
+import { getRecords } from "./api/services/GameRecord.ts"
+
 function App() {
   const [count, setCount] = useState(0)
 
+    getRecords(17).then(data => {
+        console.log("REKORDY: ", data.data);
+    })
+
+    getGames(0,25).then(data => {
+        console.log("GRY: ", data.content);
+    })
   return (
     <>
       <div>
