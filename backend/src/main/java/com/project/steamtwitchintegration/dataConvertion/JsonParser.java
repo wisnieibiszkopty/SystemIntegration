@@ -5,23 +5,22 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.project.steamtwitchintegration.models.Game;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.List;
 
 public class JsonParser extends Parser implements DataParser{
     String STEAM_JSON_CONDITION = "name";
     String TWITCH_JSON_CONDITION = "title";
 
-    public void importData(String sourcePath) {
+    public void importData(InputStream inputStream) {
         ObjectMapper mapper = new ObjectMapper();
         try {
-            JsonNode jsonNode = mapper.readTree(new File(sourcePath));
+            JsonNode jsonNode = mapper.readTree(new InputStreamReader(inputStream));
             if (jsonNode.isArray() && !jsonNode.isEmpty()) {
                 if (jsonNode.get(0).has(STEAM_JSON_CONDITION)) {
-                    setSteamGames(mapper.readValue(new File(sourcePath), new TypeReference<>() {}));
+                    setSteamGames(mapper.readValue(new InputStreamReader(inputStream), new TypeReference<>() {}));
                 } else if (jsonNode.get(0).has(TWITCH_JSON_CONDITION)) {
-                    setTwitchGames(mapper.readValue(new File(sourcePath), new TypeReference<>() {}));
+                    setTwitchGames(mapper.readValue(new InputStreamReader(inputStream), new TypeReference<>() {}));
                 } else {
                     throw new IOException("JsonParser.importData() - Unknown data format!");
                 }
@@ -30,11 +29,10 @@ public class JsonParser extends Parser implements DataParser{
             throw new RuntimeException(e);
         }
     }
-    public void exportData(String destinationPath, List<Game> gamesToExport) {
+    public void exportData(OutputStream outputStream, List<Game> gamesToExport) {
         ObjectMapper mapper = new ObjectMapper();
-        gamesToExport = gamesToExport.subList(0,5);
         try {
-            mapper.writeValue(new File(destinationPath), gamesToExport);
+            mapper.writeValue(new OutputStreamWriter(outputStream), gamesToExport);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

@@ -98,7 +98,7 @@ public class Parser {
         long endTime = System.nanoTime();
 
 //        szybsze od stream.filter ale minimalnie wolniejszy of for
-        games.removeIf(game -> game.getGameRecords().size() < 5);
+//        games.removeIf(game -> game.getGameRecords().size() < 5);
         System.out.println("CZAS: " + (endTime-startTime) / 1e9 );
         gameRepository.saveAll(games);
         log.info("Finished adding game records");
@@ -148,5 +148,25 @@ public class Parser {
                 System.out.println("Ilość wpisów z Twitcha: " + g.getGameRecords().size());
             }
         }
+    }
+    /**
+     * Function convert month from format "01" to "January " etc.
+     */
+    public String monthConvert(String month) {
+        return switch (month) {
+            case "01" -> "January ";
+            case "02" -> "February ";
+            case "03" -> "March ";
+            case "04" -> "April ";
+            case "05" -> "May ";
+            case "06" -> "June ";
+            case "07" -> "July ";
+            case "08" -> "August ";
+            case "09" -> "September ";
+            case "10" -> "October ";
+            case "11" -> "November ";
+            case "12" -> "December ";
+            default -> "";
+        };
     }
 }

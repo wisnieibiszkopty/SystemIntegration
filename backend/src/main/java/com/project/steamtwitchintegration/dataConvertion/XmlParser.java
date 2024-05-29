@@ -13,10 +13,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,12 +38,11 @@ public class XmlParser extends Parser implements DataParser{
     String TWITCH_XML_CONDITION = "TwitchGamesStats";
 
     @Override
-    public void importData(String sourcePath) {
+    public void importData(InputStream inputStream) {
         try {
-            File xmlToImport = new File(sourcePath);
             DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-            Document document = documentBuilder.parse(xmlToImport);
+            Document document = documentBuilder.parse(inputStream);
 //            document.getDocumentElement().normalize();
 
 
@@ -67,7 +64,6 @@ public class XmlParser extends Parser implements DataParser{
                         steamGame.setGain(Double.parseDouble(gameElement.getElementsByTagName("gain").item(0).getTextContent()));
                         steamGame.setPeak(Integer.parseInt(gameElement.getElementsByTagName("peak").item(0).getTextContent()));
                         steamGame.setAveragePeakPercent(gameElement.getElementsByTagName("avg_peak_perc").item(0).getTextContent());
-                        System.out.println(steamGame.getName());
                         steamGames.add(steamGame);
                     }
                 }
@@ -80,7 +76,7 @@ public class XmlParser extends Parser implements DataParser{
                         Element gameElement = (Element) gameNode;
                         TwitchGame twitchGame = new TwitchGame();
                         twitchGame.setTitle(gameElement.getElementsByTagName("Game").item(0).getTextContent());
-                        twitchGame.setMonth(gameElement.getElementsByTagName("Month").item(0).getTextContent());
+                        twitchGame.setMonth(monthConvert(gameElement.getElementsByTagName("Month").item(0).getTextContent()));
                         twitchGame.setYear(gameElement.getElementsByTagName("Year").item(0).getTextContent());
                         twitchGame.setHoursWatched(Integer.parseInt(gameElement.getElementsByTagName("Hours_watched").item(0).getTextContent()));
                         twitchGame.setHoursStreamed(Integer.parseInt(gameElement.getElementsByTagName("Hours_streamed").item(0).getTextContent()));
@@ -90,7 +86,6 @@ public class XmlParser extends Parser implements DataParser{
                         twitchGame.setAverageViewers(Integer.parseInt(gameElement.getElementsByTagName("Avg_viewers").item(0).getTextContent()));
                         twitchGame.setAverageChannels(Integer.parseInt(gameElement.getElementsByTagName("Avg_channels").item(0).getTextContent()));
                         twitchGame.setAverageViewerRatio(Double.parseDouble(gameElement.getElementsByTagName("Avg_viewer_ratio").item(0).getTextContent()));
-                        System.out.println(twitchGame.getTitle());
                         twitchGames.add(twitchGame);
                     }
                 }
@@ -100,11 +95,10 @@ public class XmlParser extends Parser implements DataParser{
         }
     }
     @Override
-    public void exportData(String destinationPath, List<Game> gamesToExport) {
-        gamesToExport = gamesToExport.subList(0,5);
+    public void exportData(OutputStream outputStream, List<Game> gamesToExport) {
         XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
         try {
-            XMLStreamWriter writer = outputFactory.createXMLStreamWriter(new FileOutputStream(destinationPath), "UTF-8");
+            XMLStreamWriter writer = outputFactory.createXMLStreamWriter(new OutputStreamWriter(outputStream, StandardCharsets.UTF_8));
             writer.writeStartDocument("UTF-8", "1.0");
             writer.writeStartElement("GamesData");
             for (Game game : gamesToExport){
@@ -190,7 +184,7 @@ public class XmlParser extends Parser implements DataParser{
             writer.flush();
             writer.close();
 
-        } catch (XMLStreamException | FileNotFoundException e) {
+        } catch (XMLStreamException e) {
             throw new RuntimeException(e);
         }
     }

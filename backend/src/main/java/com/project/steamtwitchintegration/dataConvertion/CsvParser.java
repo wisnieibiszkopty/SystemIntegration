@@ -17,9 +17,9 @@ public class CsvParser extends Parser implements DataParser {
     public List<String[]> csv;
     public String[] csvFirstRow;
     @Override
-    public void importData(String sourcePath) {
+    public void importData(InputStream inputStream) {
         this.csv = new ArrayList<>();
-        try (CSVReader reader = new CSVReader(new FileReader(sourcePath))) {
+        try (CSVReader reader = new CSVReader(new InputStreamReader(inputStream))) {
             this.csv = reader.readAll();
         } catch (IOException | CsvException e) {
             throw new RuntimeException(e);
@@ -38,8 +38,7 @@ public class CsvParser extends Parser implements DataParser {
         }
     }
     @Override
-    public void exportData(String destinationPath, List<Game> gamesToExport) {
-        gamesToExport = gamesToExport.subList(0,5);
+    public void exportData(OutputStream outputStream, List<Game> gamesToExport) {
         String[] headers = {
                 "game",
                 "year",
@@ -57,7 +56,7 @@ public class CsvParser extends Parser implements DataParser {
                 "twitchAvgChannels",
                 "twitchAvgViewerRatio"
         };
-        try (CSVWriter writer = new CSVWriter(new FileWriter(destinationPath))) {
+        try (CSVWriter writer = new CSVWriter(new OutputStreamWriter(outputStream))) {
             writer.writeNext(headers);
             List<String[]> csv = new ArrayList<>();
             for (Game game : gamesToExport) {
@@ -145,24 +144,5 @@ public class CsvParser extends Parser implements DataParser {
         }
     }
 
-    /**
-     * Function convert month from format "01" to "January " etc.
-     */
-    private String monthConvert(String month) {
-        return switch (month) {
-            case "01" -> "January ";
-            case "02" -> "February ";
-            case "03" -> "March ";
-            case "04" -> "April ";
-            case "05" -> "May ";
-            case "06" -> "June ";
-            case "07" -> "July ";
-            case "08" -> "August ";
-            case "09" -> "September ";
-            case "10" -> "October ";
-            case "11" -> "November ";
-            case "12" -> "December ";
-            default -> "";
-        };
-    }
+
 }
