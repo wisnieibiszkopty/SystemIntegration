@@ -31,6 +31,9 @@ public class DatabaseInitializer implements CommandLineRunner {
     private CsvParser csvParser;
     private final IGDBService igdbService;
 
+    @Value("${LOAD_DATA:true}")
+    private boolean loadDataOnStartup;
+
     public DatabaseInitializer(IGDBService igdbService, GameRepository gameRepository, CsvParser csvParser) {
         this.igdbService = igdbService;
         this.gameRepository = gameRepository;
@@ -40,33 +43,35 @@ public class DatabaseInitializer implements CommandLineRunner {
     @Override
     @Transactional
     public void run(String... args) throws Exception {
-        // expensvie methods
-        //igdbService.loadTwitchToken();
-        //igdbService.loadGameGeneralInfo();
+        if(loadDataOnStartup){
+            // expensvie methods
+            //igdbService.loadTwitchToken();
+            //igdbService.loadGameGeneralInfo();
 
-        //CsvParser csvParser = new CsvParser();
-//        ClassPathResource steamFile = new ClassPathResource("data/SteamModified.csv");
-//        ClassPathResource twitchFile = new ClassPathResource("data/Twitch_game_data.csv");
-//        Path steamPath = steamFile.getFile().toPath();
-//        Path twitchPath = twitchFile.getFile().toPath();
+            //CsvParser csvParser = new CsvParser();
+    //        ClassPathResource steamFile = new ClassPathResource("data/SteamModified.csv");
+    //        ClassPathResource twitchFile = new ClassPathResource("data/Twitch_game_data.csv");
+    //        Path steamPath = steamFile.getFile().toPath();
+    //        Path twitchPath = twitchFile.getFile().toPath();
 
-        // in jar files don't exist
-        //InputStream steamStream = getClass().getResourceAsStream("/data/SteamModified.csv");
-        //InputStream twitchStream = getClass().getResourceAsStream("/data/Twitch_game_data.csv");
+            // in jar files don't exist
+            InputStream steamStream = getClass().getResourceAsStream("/data/SteamModified.csv");
+            InputStream twitchStream = getClass().getResourceAsStream("/data/Twitch_game_data.csv");
 
-        log.info("Loading data... ");
-        //csvParser.importData(steamPath.toString());
-        //csvParser.importData(twitchPath.toString());
-        //csvParser.importData2(steamStream);
-        //csvParser.importData2(twitchStream);
+            log.info("Loading data... ");
+            //csvParser.importData(steamPath.toString());
+            //csvParser.importData(twitchPath.toString());
+            csvParser.importData2(steamStream);
+            csvParser.importData2(twitchStream);
 
-        //csvParser.loadGames3();
+            csvParser.loadGames3();
 
-        log.info("Finished loading data");
-        //gameRepository.saveAll(csvParser.getGames());
+            log.info("Finished loading data");
+            //gameRepository.saveAll(csvParser.getGames());
 
-        // expensive method
-        //igdbService.loadGamesInfo();
+            // expensive method
+            //igdbService.loadGamesInfo();
+        }
     }
 
     public void loadGeneralGamesData(){

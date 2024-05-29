@@ -13,6 +13,9 @@ services:
       - POSTGRES_DB=integration_db
       - DATA_STEAM_PATH=/app/data/SteamModified.csv
       - DATA_TWITCH_PATH=/app/data/Twitch_game_data.csv
+      # set to true to initialize data from csv files
+      # if database already has data prevent adding redundant data by setting to false
+      - LOAD_DATA=false
   db:
     image: postgres
     restart: always
