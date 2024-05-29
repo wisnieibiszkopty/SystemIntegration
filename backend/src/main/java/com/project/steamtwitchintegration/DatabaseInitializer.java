@@ -7,8 +7,6 @@ import com.project.steamtwitchintegration.models.GameGenre;
 import com.project.steamtwitchintegration.models.GameMode;
 import com.project.steamtwitchintegration.models.PlayerPerspective;
 import com.project.steamtwitchintegration.repositories.GameRepository;
-import com.project.steamtwitchintegration.repositories.SteamGameRepository;
-import com.project.steamtwitchintegration.repositories.TwitchGameRepository;
 import com.project.steamtwitchintegration.services.IGDBService;
 import jakarta.persistence.EntityManager;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +19,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,14 +45,23 @@ public class DatabaseInitializer implements CommandLineRunner {
         //igdbService.loadGameGeneralInfo();
 
         //CsvParser csvParser = new CsvParser();
-        ClassPathResource steamFile = new ClassPathResource("data/SteamModified.csv");
-        ClassPathResource twitchFile = new ClassPathResource("data/Twitch_game_data.csv");
-        Path steamPath = steamFile.getFile().toPath();
-        Path twitchPath = twitchFile.getFile().toPath();
+//        ClassPathResource steamFile = new ClassPathResource("data/SteamModified.csv");
+//        ClassPathResource twitchFile = new ClassPathResource("data/Twitch_game_data.csv");
+//        Path steamPath = steamFile.getFile().toPath();
+//        Path twitchPath = twitchFile.getFile().toPath();
+
+        // in jar files don't exist
+        //InputStream steamStream = getClass().getResourceAsStream("/data/SteamModified.csv");
+        //InputStream twitchStream = getClass().getResourceAsStream("/data/Twitch_game_data.csv");
+
         log.info("Loading data... ");
-        csvParser.importData(steamPath.toString());
-        csvParser.importData(twitchPath.toString());
-        csvParser.loadGames3();
+        //csvParser.importData(steamPath.toString());
+        //csvParser.importData(twitchPath.toString());
+        //csvParser.importData2(steamStream);
+        //csvParser.importData2(twitchStream);
+
+        //csvParser.loadGames3();
+
         log.info("Finished loading data");
         //gameRepository.saveAll(csvParser.getGames());
 

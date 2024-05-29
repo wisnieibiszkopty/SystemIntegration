@@ -1,13 +1,33 @@
 version: "3.8"
 
 services:
-  psql-db:
-    image: postgres
-    container_name: postgres
-    restart: always
+  backend:
+    build: backend
+    ports:
+      - "8080:8080"
+    networks:
+      - integration
+    depends_on:
+      - db
     environment:
+      - POSTGRES_DB=integration_db
+      - DATA_STEAM_PATH=/app/data/SteamModified.csv
+      - DATA_TWITCH_PATH=/app/data/Twitch_game_data.csv
+  db:
+    image: postgres
+    restart: always
+    volumes:
+      - data:/var/lib/postgresql/data
+    networks:
+      - integration
+    environment:
+      - POSTGRES_DB=integration_db
       - POSTGRES_USER=integration
       - POSTGRES_PASSWORD=integration
-      - POSTGRES_DB=integration_db
-    ports:
-      - '5432:5432'
+    expose:
+      - 5432
+volumes:
+  data:
+# add secrets for password
+networks:
+  integration:

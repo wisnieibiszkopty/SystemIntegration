@@ -58,6 +58,27 @@ public class CsvParser implements DataParser {
         }
     }
 
+    public void importData2(InputStream stream){
+        this.games = new ArrayList<>();
+        this.csv = new ArrayList<>();
+        try (CSVReader reader = new CSVReader(new InputStreamReader(stream))) {
+            this.csv = reader.readAll();
+        } catch (IOException | CsvException e) {
+            throw new RuntimeException(e);
+        }
+//        odcina pierwszy wiersz z nagłówkiem
+        csvFirstRow = this.csv.get(0);
+//        ucina pierwszy wiersz ( z nagłówkami ) i bierze tylko do  n-tego ( do testów aby mniej mieliło )
+        this.csv.remove(0);
+        if (csvFirstRow[0].equals(STEAM_CSV_CONDITION)) {
+            loadSteamGames();
+        } else if (csvFirstRow[0].equals(TWITCH_CSV_CONDITION)) {
+            loadTwitchGames();
+        } else {
+            log.error("CsvParser.importData()");
+        }
+    }
+
     private void addGameByName(String name){
         if(games.stream().anyMatch(game -> game.getGameName().equals(name))){
             //log.info("Game already exists");
@@ -67,7 +88,6 @@ public class CsvParser implements DataParser {
         Game game = new Game();
         game.setGameName(name);
         games.add(game);
-        log.info("Added: " + game.getGameName());
     }
 
     @Override
