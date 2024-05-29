@@ -13,6 +13,11 @@ public class XmlParser implements DataParser {
     }
 
     @Override
+    public void loadGames() {
+
+    }
+
+    @Override
     public void loadSteamGames() {
 
     }

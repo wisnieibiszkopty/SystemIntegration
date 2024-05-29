@@ -15,6 +15,11 @@ public interface DataParser {
     void exportData(String destinationPath, Filetype filetype);
 
     /**
+     * Funkcja wczytująca gry do bazy danych
+     */
+    void loadGames();
+
+    /**
      * Funkcja wczytujaca zaimportowane dane o grach ze Steama do kolekcji obiektów SteamGame
      */
     void loadSteamGames();
