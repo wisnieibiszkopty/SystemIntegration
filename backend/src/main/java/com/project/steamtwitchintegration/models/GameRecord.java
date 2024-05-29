@@ -1,5 +1,6 @@
 package com.project.steamtwitchintegration.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
@@ -12,6 +13,7 @@ public class GameRecord {
     private Long id;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "game_id")
+    @JsonBackReference
     private Game game;
 
     @Column(name = "record_year")
