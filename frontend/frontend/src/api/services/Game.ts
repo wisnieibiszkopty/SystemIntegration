@@ -1,28 +1,10 @@
-import axios from "../axios.ts";
+import api from "../axios.ts";
+import {Game, defaultGame} from "../interfaces.ts";
 import {AxiosResponse} from "axios";
 
-// TODO
-// dokonczyc interfejs gry, czyli wszystkie obiekty wchodzace
-// w relacje z Game też określić interfejsy.
-
-
-// interface Game {
-//     gameName: string;
-//     id: number;
-//     // gameRecords: [GameRecord];
-//     coverUrl: string;
-//     rating: number;
-//     ratingCount: number;
-//     totalRating: number;
-//     totalRatingCount: number;
-// //     perspectives: [PlayerPerspective];
-// //     genres: [GameGenre];
-// //     modes: [GameMode];
-// }
-
-export const getGames = async (page: number, size: number): Promise<any> => {
+export const getGames = async (page: number, size: number): Promise<Game[]> => {
     try {
-        const response: AxiosResponse = await axios.get("/api/games", {
+        const response: AxiosResponse<Game[]> = await api.get("/api/games", {
             params: {
                 page: page,
                 size: size,
@@ -30,12 +12,13 @@ export const getGames = async (page: number, size: number): Promise<any> => {
         });
         return response.data;
     } catch (error) {
-        console.error("getGames() - Error fetching data: ", error);
+        console.error("getGames() - Error calling api: ", error);
+        return [];
     }
 };
-export const getGame = async (gameName: string, page: number, size: number): Promise<any> => {
+export const getGame = async (gameName: string, page: number, size: number): Promise<Game> => {
     try {
-        const response: AxiosResponse = await axios.get(`/api/games/${gameName}`, {
+        const response: AxiosResponse<Game> = await api.get(`/api/games/${gameName}`, {
             params: {
                 page: page,
                 size: size,
@@ -43,7 +26,8 @@ export const getGame = async (gameName: string, page: number, size: number): Pro
         });
         return response.data;
     } catch (error) {
-        console.error("getGame() - Error fetching data: ", error);
+        console.error("getGame() - Error calling api : ", error);
+        return defaultGame;
     }
 };
 

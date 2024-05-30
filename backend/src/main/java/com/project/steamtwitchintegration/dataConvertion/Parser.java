@@ -98,7 +98,7 @@ public class Parser {
         long endTime = System.nanoTime();
 
 //        szybsze od stream.filter ale minimalnie wolniejszy of for
-//        games.removeIf(game -> game.getGameRecords().size() < 5);
+        games.removeIf(game -> game.getGameRecords().size() < 15);
         System.out.println("CZAS: " + (endTime-startTime) / 1e9 );
         gameRepository.saveAll(games);
         log.info("Finished adding game records");
