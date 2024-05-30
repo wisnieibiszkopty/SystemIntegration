@@ -45,5 +45,4 @@ public class DatabaseInitializer implements CommandLineRunner {
             log.info("Finished loading data");
         }
     }
-
 }
