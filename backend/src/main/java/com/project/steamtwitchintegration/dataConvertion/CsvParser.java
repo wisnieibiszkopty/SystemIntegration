@@ -36,6 +36,7 @@ public class CsvParser extends Parser implements DataParser {
             System.out.println("CsvParser.importData() error");
         }
     }
+
     @Override
     public void exportData(OutputStream outputStream, List<Game> gamesToExport) {
         String[] headers = {
