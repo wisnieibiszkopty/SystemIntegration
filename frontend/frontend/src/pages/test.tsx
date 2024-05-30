@@ -1,8 +1,6 @@
 import {Link} from "react-router-dom";
 
 function test() {
-    // TODO
-    // Rendeeruja sie komponenty z linków prowadzących, czemu?
     return (
         <>
             <h1>TEST</h1>

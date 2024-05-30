@@ -18,13 +18,13 @@ const GameRecordsPage = () => {
 
         fetchRecords().then();
     }, []);
-    console.log(records);
 
     return (
         <>
+            <h2>GameRecords dla id={gameId}</h2>
             <div>
                 {records && records.map((record) => (
-                    <GameRecordComponent record={record}/>
+                    <GameRecordComponent record={record} key={record.id}/>
                 ))}
             </div>
         </>

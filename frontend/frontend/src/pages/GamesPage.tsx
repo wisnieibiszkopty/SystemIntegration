@@ -5,27 +5,26 @@ import GameComponent from "../components/GameComponent.tsx";
 
 
 const GamesPage = () => {
-    const [games, setGames] = useState<Game[]>();
-
+    const [games, setGames] = useState<Game[]>([]);
     useEffect(() => {
         const fetchGames = async () => {
             try {
                 const gamesData = await getGames(0,25);
-                setGames(gamesData);
+                console.log(gamesData.content);
+                setGames(gamesData.content);
             } catch (error) {
                 console.error("GamesPage.useEffect() - Error fetching games: ", error);
             }
         };
-
         fetchGames().then();
     }, []);
-    console.log(games);
 
     return (
         <>
+            <h2>GIERKI</h2>
             <div>
                 {games && games.map((game) => (
-                    <GameComponent game={game}/>
+                    <GameComponent game={game} key={game.id}/>
                 ))}
             </div>
         </>

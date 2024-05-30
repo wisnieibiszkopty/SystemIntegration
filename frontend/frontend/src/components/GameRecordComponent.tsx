@@ -4,7 +4,7 @@ import React from "react";
 
 const GameRecordComponent: React.FC<{ record: GameRecord}> = ({record}) => {
     return (
-        <div key={record.id}>
+        <div>
             <p>Data: {record.year} - {record.month}</p>
             <p>
                 średnia graczy: {record.steamStats.steamAveragePlayers},
