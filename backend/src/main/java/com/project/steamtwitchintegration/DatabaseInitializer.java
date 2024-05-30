@@ -8,6 +8,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 
@@ -18,6 +19,9 @@ public class DatabaseInitializer implements CommandLineRunner {
     private Parser parser;
     private final IGDBService igdbService;
 
+    @Value("${LOAD_DATA:true}")
+    private boolean loadDataOnStartup;
+
     public DatabaseInitializer(IGDBService igdbService, GameRepository gameRepository, Parser parser) {
         this.igdbService = igdbService;
         this.gameRepository = gameRepository;
@@ -26,18 +30,19 @@ public class DatabaseInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        CsvParser csvParser = new CsvParser();
+        if(loadDataOnStartup){
+            CsvParser csvParser = new CsvParser();
 
-        InputStream steamStream = getClass().getResourceAsStream("/data/SteamModified.csv");
-        InputStream twitchStream = getClass().getResourceAsStream("/data/Twitch_game_data.csv");
+            InputStream steamStream = getClass().getResourceAsStream("/data/SteamModified.csv");
+            InputStream twitchStream = getClass().getResourceAsStream("/data/Twitch_game_data.csv");
 
-        log.info("Loading data... ");
+            log.info("Loading data... ");
 
-        csvParser.importData(steamStream);
-        csvParser.importData(twitchStream);
+            csvParser.importData(steamStream);
+            csvParser.importData(twitchStream);
 
-        parser.loadGames();
-        log.info("Finished loading data");
+            parser.loadGames();
+            log.info("Finished loading data");
+        }
     }
-
 }
