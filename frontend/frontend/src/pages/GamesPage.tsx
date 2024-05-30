@@ -3,7 +3,6 @@ import {Game} from "../api/interfaces.ts";
 import {getGames} from "../api/services/Game.ts";
 import GameComponent from "../components/GameComponent.tsx";
 
-
 const GamesPage = () => {
     const [games, setGames] = useState<Game[]>([]);
     useEffect(() => {
@@ -24,7 +23,9 @@ const GamesPage = () => {
             <h2>GIERKI</h2>
             <div>
                 {games && games.map((game) => (
-                    <GameComponent game={game} key={game.id}/>
+                    <div  key={game.id}>
+                        <GameComponent game={game}/>
+                    </div>
                 ))}
             </div>
         </>

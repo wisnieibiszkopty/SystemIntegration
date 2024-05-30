@@ -1,16 +1,15 @@
 import {Link} from "react-router-dom";
+import React from "react";
 
-function test() {
+const Test: React.FC = () => {
     return (
         <>
             <h1>TEST</h1>
             <div>
-
                 <Link to={"/games"}>GIERKI</Link><br/>
-                <Link to={"/records"}>WPISY DLA ID=3</Link>
             </div>
         </>
-    )
+    );
 }
 
-export default test;
+export default Test;
