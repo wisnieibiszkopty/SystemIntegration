@@ -4,6 +4,7 @@ import com.project.steamtwitchintegration.dataConvertion.*;
 import com.project.steamtwitchintegration.repositories.GameRepository;
 import com.project.steamtwitchintegration.services.IGDBService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
