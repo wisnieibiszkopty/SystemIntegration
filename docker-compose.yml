@@ -15,7 +15,7 @@ services:
       - DATA_TWITCH_PATH=/app/data/Twitch_game_data.csv
       # set to true to initialize data from csv files
       # if database already has data prevent adding redundant data by setting to false
-      - LOAD_DATA=false
+      - LOAD_DATA=true
   db:
     image: postgres
     restart: always

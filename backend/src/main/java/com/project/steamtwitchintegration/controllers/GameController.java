@@ -1,5 +1,6 @@
 package com.project.steamtwitchintegration.controllers;
 
+import com.project.steamtwitchintegration.dto.GamesInfoDto;
 import com.project.steamtwitchintegration.models.GameRecord;
 import com.project.steamtwitchintegration.projections.GameProjection;
 import com.project.steamtwitchintegration.repositories.GameRecordRepository;
@@ -12,6 +13,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,6 +33,13 @@ public class GameController {
 
     public GameController(GameService gameService) {
         this.gameService = gameService;
+    }
+
+    @Operation(summary = "Retrieve genres, modes and perspectives which game can have")
+    @GetMapping("/info")
+    public ResponseEntity<GamesInfoDto> getGameInfo(){
+        GamesInfoDto info = this.gameService.getGamesInfo();
+        return ResponseEntity.ok(info);
     }
 
     // add filtering by genre, mode, perspective

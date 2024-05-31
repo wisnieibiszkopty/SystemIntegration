@@ -26,15 +26,15 @@ public class Game {
     private double totalRating;
     private int totalRatingCount;
 
-    @ManyToMany(mappedBy = "games")
+    @ManyToMany(mappedBy = "games", fetch = FetchType.EAGER)
     @JsonManagedReference
     private List<PlayerPerspective> perspectives = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "games")
+    @ManyToMany(mappedBy = "games", fetch = FetchType.EAGER)
     @JsonManagedReference
     private List<GameGenre> genres = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "games")
+    @ManyToMany(mappedBy = "games", fetch = FetchType.EAGER)
     @JsonManagedReference
     private List<GameMode> modes = new ArrayList<>();
 

@@ -16,6 +16,8 @@ public class GameRecord {
     @JsonBackReference
     private Game game;
 
+    private String timestamp;
+
     @Column(name = "record_year")
     private String year;
     @Column(name = "record_month")
