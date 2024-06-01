@@ -16,3 +16,8 @@ do którego przypisane są rekordy zawierające informacje na temat statystyk z 
 Zostają wczytane z api dodatkowe dane do gry - rating, image_url oraz gatunek, tryb gry, i perspektywa, dodano dla nich
 osobne tabele w bazie aby przechowywać te informacje w relacji wiele do wielu. W części przypadków api nie znajduje gry po nazwie
 Nie chce podać też wszystkich gatunków gier jakie przechowuje
+
+Próbowano utworzyć zapytanie filtrujące gry na podstawie gatunku, trybu gry, perspektywy i nazwy, przy czym każdy parametr mógłbyć opcjonalnie, jednak nie zostało
+to osiągnięte i zostało zastąpione uproszczoną wersją.
+
+Dodano możliwość filtrowania rekordów czasowych od wybranej daty rozpoczęcia i zakończenia.
