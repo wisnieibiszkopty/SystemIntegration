@@ -33,7 +33,7 @@ const GameRecordsPage: React.FC = () => {
 
     return (
         <>
-            <div style={{height: '500px', width: '100%'}}>
+            <div>
                 <LineChartComponent ref={chartRef} data={records} game={game}/>
             </div>
             {records && records.map((record) => (
