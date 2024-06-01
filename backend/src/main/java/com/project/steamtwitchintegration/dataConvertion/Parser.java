@@ -75,6 +75,9 @@ public class Parser {
                         addGameByName(twitchGame.getTitle());
                         record.setYear(steamGame.getYear());
                         record.setMonth(steamGame.getMonth());
+                        // additional way of storing record data
+                        record.setTimestamp(steamGame.getYear() + "-" + steamGame.getMonth());
+                        record.setTime();
 
                         SteamStats steamStats = getSteamStats(steamGame);
                         steamStats.setRecord(record);
@@ -90,7 +93,7 @@ public class Parser {
                                 .ifPresent(game -> {
                                     record.setGame(game);
                                     game.getGameRecords().add(record);
-                                    log.info("Added record to " + game.getGameName());
+                                    //log.info("Added record to " + game.getGameName());
                                 });
                     });
 
@@ -113,7 +116,7 @@ public class Parser {
         Game game = new Game();
         game.setGameName(name);
         games.add(game);
-        log.info("Added: " + game.getGameName());
+        //log.info("Added: " + game.getGameName());
     }
     private TwitchStats getTwitchStats(TwitchGame twitchGame){
         return TwitchStats
@@ -166,6 +169,24 @@ public class Parser {
             case "10" -> "October ";
             case "11" -> "November ";
             case "12" -> "December ";
+            default -> "";
+        };
+    }
+
+    public String monthConverterToNumber(String month){
+        return switch (month) {
+            case "January " -> "01";
+            case "February " -> "02";
+            case "March " -> "03";
+            case "April " -> "04";
+            case "May " -> "05";
+            case "June " -> "06";
+            case "July " -> "07";
+            case "August " -> "08";
+            case "September " -> "09";
+            case "October " -> "10";
+            case "November " -> "11";
+            case "December " -> "12";
             default -> "";
         };
     }

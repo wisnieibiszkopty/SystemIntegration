@@ -112,7 +112,8 @@ public class CsvParser extends Parser implements DataParser {
                 SteamGame game = new SteamGame();
                 game.setName(s[0]);
                 game.setYear(s[1]);
-                game.setMonth(s[2]);
+                //game.setMonth(s[2]);
+                game.setMonth(monthConverterToNumber(s[2]));
                 game.setAverage(Double.parseDouble(s[3]));
                 game.setGain(Double.parseDouble(s[4]));
                 game.setPeak(Integer.parseInt(s[5]));
@@ -128,7 +129,10 @@ public class CsvParser extends Parser implements DataParser {
             if (s.length == 12) {
                 TwitchGame game = new TwitchGame();
                 game.setTitle(s[1]);
-                game.setMonth(monthConvert(s[2]));
+                // instead of mapping numeric months to words inverting it,
+                // so it can be easier drawn on plot
+                //game.setMonth(monthConvert(s[2]));
+                game.setMonth(s[2]);
                 game.setYear(s[3]);
                 game.setHoursWatched(Integer.parseInt(s[4]));
                 game.setHoursStreamed(Integer.parseInt(s[5]));

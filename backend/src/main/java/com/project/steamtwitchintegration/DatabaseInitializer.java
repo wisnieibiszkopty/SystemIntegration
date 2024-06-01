@@ -4,6 +4,7 @@ import com.project.steamtwitchintegration.dataConvertion.*;
 import com.project.steamtwitchintegration.repositories.GameRepository;
 import com.project.steamtwitchintegration.services.IGDBService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
@@ -19,7 +20,7 @@ public class DatabaseInitializer implements CommandLineRunner {
     private Parser parser;
     private final IGDBService igdbService;
 
-    @Value("${LOAD_DATA:true}")
+    @Value("${LOAD_DATA:false}")
     private boolean loadDataOnStartup;
 
     public DatabaseInitializer(IGDBService igdbService, GameRepository gameRepository, Parser parser) {
@@ -31,6 +32,9 @@ public class DatabaseInitializer implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         if(loadDataOnStartup){
+            igdbService.loadTwitchToken();
+            igdbService.loadGameGeneralInfo();
+
             CsvParser csvParser = new CsvParser();
 
             InputStream steamStream = getClass().getResourceAsStream("/data/SteamModified.csv");
@@ -42,6 +46,8 @@ public class DatabaseInitializer implements CommandLineRunner {
             csvParser.importData(twitchStream);
 
             parser.loadGames();
+            igdbService.loadGamesInfo();
+
             log.info("Finished loading data");
         }
     }
