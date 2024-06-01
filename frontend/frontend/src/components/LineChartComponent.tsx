@@ -1,13 +1,14 @@
 import React, {forwardRef, useEffect, useState} from "react";
 import {CategoryScale, Chart, LinearScale, LineController, LineElement, PointElement} from "chart.js";
-import {GameRecord} from "../api/interfaces.ts";
+import {Game, GameRecord} from "../api/interfaces.ts";
 
 interface PropsType {
     data: GameRecord[];
+    game: Game;
 }
 
 
-const LineChartComponent = forwardRef(({data}: PropsType, ref: React.ForwardedRef<any>) => {
+const LineChartComponent = forwardRef(({data, game}: PropsType, ref: React.ForwardedRef<any>) => {
     // @ts-ignore
     const [chartInst, setChartInst] = useState<Chart<"line", any, unknown> | null>(null);
 
@@ -20,12 +21,9 @@ const LineChartComponent = forwardRef(({data}: PropsType, ref: React.ForwardedRe
         console.log(ref);
 
         const labels = data.map(item => `${item.year} ${item.month.trim()}`);
+        console.log(labels);
         const steamStatsData = data.map(item => item.steamStats.steamAveragePlayers);
         const twitchStatsData = data.map(item => item.twitchStats.twitchAvgViewers);
-
-        labels.reverse();
-        steamStatsData.reverse();
-        twitchStatsData.reverse();
 
         // @ts-ignore
         const ctx = document.getElementById("chart").getContext('2d');
@@ -56,15 +54,27 @@ const LineChartComponent = forwardRef(({data}: PropsType, ref: React.ForwardedRe
                 ]
             },
             options: {
+                responsive: true,
                 scales: {
                     y: {
                         beginAtZero: true,
                     },
+                    // x: {
+                    //     ticks: {
+                    //         autoSkip: false, // Ensure all labels are shown
+                    //         maxRotation: 60, // Rotate labels for better readability if necessary
+                    //         minRotation: 45
+                    //     }
+                    // }
                 },
                 plugins: {
                     legend: {
                         display: true,
                         position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: `Statystyki dla ${game.gameName}`
                     }
                 }
             }

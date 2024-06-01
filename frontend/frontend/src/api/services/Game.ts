@@ -18,7 +18,7 @@ export const getGames = async (page: number, size: number): Promise<any> => {
 };
 export const getGame = async (gameId: number): Promise<Game> => {
     try {
-        const response: AxiosResponse<Game> = await api.get(`/api/games/${gameId}`, {});
+        const response: AxiosResponse<Game> = await api.get(`/api/games/${gameId}`);
         if (response) {
             return response.data;
         } else {

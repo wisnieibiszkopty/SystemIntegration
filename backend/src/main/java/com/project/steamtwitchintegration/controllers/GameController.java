@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 // TODO
 // method to return list of games grouped by genres, name etc...
@@ -62,11 +63,17 @@ public class GameController {
         @Parameter(name = "page", description = "Page number, starting from 0"),
         @Parameter(name = "size", description = "Number of items per page")
     })
-    @GetMapping("/{name}")
+    @GetMapping("/byName/{name}")
     public Page<GameProjection> findGamesByName(
             @PathVariable String name,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "25") int size){
         return gameService.getGamesByName(name, page, size);
+    }
+
+    @ApiResponses({})
+    @GetMapping("/{gameId}")
+    public Optional<Game> findGame(@PathVariable Long gameId){
+        return gameService.getGame(gameId);
     }
 }
