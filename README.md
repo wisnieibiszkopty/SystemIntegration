@@ -12,3 +12,7 @@ Wartość ta została zamieniona na 0. Podobny problem wystepował również prz
 Początkowo struktura bazy danych odpowiadała plikom csv - występowały dwie tabele dla danych z Twitcha i Steama.
 Nie było to jednak optymalne rozwiązanie do dalszego użytku w aplikacji, dlatego od teraz istnieje ogólny obieg gra,
 do którego przypisane są rekordy zawierające informacje na temat statystyk z danego miesiąca.
+
+Zostają wczytane z api dodatkowe dane do gry - rating, image_url oraz gatunek, tryb gry, i perspektywa, dodano dla nich
+osobne tabele w bazie aby przechowywać te informacje w relacji wiele do wielu. W części przypadków api nie znajduje gry po nazwie
+Nie chce podać też wszystkich gatunków gier jakie przechowuje

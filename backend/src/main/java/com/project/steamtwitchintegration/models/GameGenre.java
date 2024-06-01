@@ -18,7 +18,7 @@ public class GameGenre {
     private String name;
 
     //@OneToMany(mappedBy = "genre", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "games_genres",
             joinColumns = @JoinColumn(name = "game_genre_id"),

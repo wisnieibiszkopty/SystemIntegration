@@ -19,7 +19,7 @@ public class PlayerPerspective {
     private String name;
 
     //@OneToMany(mappedBy = "perspective", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "games_perspectives",
             joinColumns = @JoinColumn(name = "player_perspective_id"),
