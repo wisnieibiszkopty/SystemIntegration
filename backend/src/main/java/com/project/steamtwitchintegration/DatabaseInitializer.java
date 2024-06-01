@@ -32,23 +32,23 @@ public class DatabaseInitializer implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         if(loadDataOnStartup){
-//            igdbService.loadTwitchToken();
-//            igdbService.loadGameGeneralInfo();
-//
-//            CsvParser csvParser = new CsvParser();
-//
-//            InputStream steamStream = getClass().getResourceAsStream("/data/SteamModified.csv");
-//            InputStream twitchStream = getClass().getResourceAsStream("/data/Twitch_game_data.csv");
-//
-//            log.info("Loading data... ");
-//
-//            csvParser.importData(steamStream);
-//            csvParser.importData(twitchStream);
-//
-//            parser.loadGames();
-//            igdbService.loadGamesInfo();
-//
-//            log.info("Finished loading data");
+            igdbService.loadTwitchToken();
+            igdbService.loadGameGeneralInfo();
+
+            CsvParser csvParser = new CsvParser();
+
+            InputStream steamStream = getClass().getResourceAsStream("/data/SteamModified.csv");
+            InputStream twitchStream = getClass().getResourceAsStream("/data/Twitch_game_data.csv");
+
+            log.info("Loading data... ");
+
+            csvParser.importData(steamStream);
+            csvParser.importData(twitchStream);
+
+            parser.loadGames();
+            igdbService.loadGamesInfo();
+
+            log.info("Finished loading data");
         }
     }
 }

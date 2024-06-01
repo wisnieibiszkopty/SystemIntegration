@@ -5,6 +5,10 @@ import jakarta.persistence.*;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 
+import java.time.YearMonth;
+import java.util.Calendar;
+import java.util.Date;
+
 @Data
 @Entity(name = "gameRecord")
 public class GameRecord {
@@ -17,7 +21,7 @@ public class GameRecord {
     private Game game;
 
     private String timestamp;
-
+    private Date time;
     @Column(name = "record_year")
     private String year;
     @Column(name = "record_month")
@@ -30,4 +34,10 @@ public class GameRecord {
     @OneToOne(mappedBy = "record", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference
     private TwitchStats twitchStats;
+
+    public void setTime(){
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Integer.valueOf(year), Integer.valueOf(month) - 1, 1);
+        this.time = calendar.getTime();
+    }
 }

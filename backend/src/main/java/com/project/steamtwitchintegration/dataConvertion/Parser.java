@@ -77,6 +77,7 @@ public class Parser {
                         record.setMonth(steamGame.getMonth());
                         // additional way of storing record data
                         record.setTimestamp(steamGame.getYear() + "-" + steamGame.getMonth());
+                        record.setTime();
 
                         SteamStats steamStats = getSteamStats(steamGame);
                         steamStats.setRecord(record);
