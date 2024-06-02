@@ -1,15 +1,14 @@
 import React, {forwardRef, useEffect, useState} from "react";
 import {CategoryScale, LinearScale, LineController, LineElement, PointElement} from "chart.js";
-import {Game, GameRecord} from "../api/interfaces.ts";
+import {GameRecord} from "../api/interfaces.ts";
 import Chart from 'chart.js/auto';
 
 interface PropsType {
     data: GameRecord[];
-    game: Game;
 }
 
 
-const LineChartComponent = forwardRef(({data, game}: PropsType, ref: React.ForwardedRef<any>) => {
+const LineChart = forwardRef(({data}: PropsType, ref: React.ForwardedRef<any>) => {
     // @ts-ignore
     const [chartInst, setChartInst] = useState<Chart<"line", any, unknown> | null>(null);
 
@@ -21,10 +20,10 @@ const LineChartComponent = forwardRef(({data, game}: PropsType, ref: React.Forwa
         // typescript don't want to compile
         console.log(ref);
 
-        const labels = data.map(item => `${item.year} ${item.month.trim()}`);
+        const labels = data.map(item => `${item.year} ${item.month.trim()}`).reverse();
         console.log(labels);
-        const steamStatsData = data.map(item => item.steamStats);
-        const twitchStatsData = data.map(item => item.twitchStats);
+        const steamStatsData = data.map(item => item.steamStats).reverse();
+        const twitchStatsData = data.map(item => item.twitchStats).reverse();
         const steamData = [
             { data: steamStatsData.map(item => item.steamAveragePlayers), label: "Średnia graczy", },
             { data: steamStatsData.map(item => item.steamGainPlayers), label: "Przyrost graczy", },
@@ -115,12 +114,9 @@ const LineChartComponent = forwardRef(({data, game}: PropsType, ref: React.Forwa
 
     return (
         <div>
-            <h2>
-                {game.gameName}
-            </h2>
             <canvas id="chart" width={'1200px'} height={'600px'}></canvas>
         </div>
     );
 });
 
-export default LineChartComponent;
+export default LineChart;

@@ -2,10 +2,11 @@ import React, {useEffect, useRef, useState} from "react";
 import {defaultGame, Game, GameRecord} from "../api/interfaces.ts";
 import {getRecords} from "../api/services/GameRecord.ts";
 import {useParams} from "react-router-dom";
-import LineChartComponent from "../components/LineChartComponent.tsx";
+import LineChart from "../components/LineChart.tsx";
 import {Chart} from "chart.js";
-import GameRecordComponent from "../components/GameRecordComponent.tsx";
+import GameRecordsTable from "../components/GameRecordsTable.tsx";
 import {getGame} from "../api/services/Game.ts";
+import GameInfo from "../components/GameInfo.tsx";
 
 const GameRecordsPage: React.FC = () => {
     const [records, setRecords] = useState<GameRecord[]>([]);
@@ -14,31 +15,32 @@ const GameRecordsPage: React.FC = () => {
     const chartRef = useRef<Chart | null>(null);
 
     useEffect(() => {
+        const fetchGame = async () => {
+            try {
+                const gameData = await getGame(parseInt(gameId));
+                setGame(gameData);
+            } catch (error) {
+                console.error("fetchGame() - error fetching game: ", error);
+            }
+        }
         const fetchRecords = async () => {
             try {
-                if (gameId) {
-                    const recordsData = await getRecords(gameId);
-                    setRecords(recordsData);
-                    const gameData = await getGame(parseInt(gameId));
-                    setGame(gameData);
-                } else {
-                    console.error("fetchRecords() - gameId is null")
-                }
+                const recordsData = await getRecords(gameId);
+                setRecords(recordsData);
             } catch (error) {
                 console.error("GamesPage.useEffect() - Error fetching games: ", error);
             }
         };
-        fetchRecords().then();
+        fetchGame().then(fetchRecords);
     }, [gameId]);
 
     return (
         <>
+            <GameInfo game={game}/>
             <div>
-                <LineChartComponent ref={chartRef} data={records} game={game}/>
+                <LineChart ref={chartRef} data={records}/>
             </div>
-            {records && records.map((record) => (
-                <GameRecordComponent record={record} key={record.id}/>
-            ))}
+            <GameRecordsTable records={records}/>
         </>
     )
 }

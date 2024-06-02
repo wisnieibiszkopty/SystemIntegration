@@ -1,6 +1,3 @@
-// TODO
-// dokonczyc interfejs gry, czyli wszystkie obiekty wchodzace
-// w relacje z Game też określić interfejsy.
 export interface Game {
     gameName: string;
     id: number;
