@@ -21,3 +21,5 @@ Próbowano utworzyć zapytanie filtrujące gry na podstawie gatunku, trybu gry, 
 to osiągnięte i zostało zastąpione uproszczoną wersją.
 
 Dodano możliwość filtrowania rekordów czasowych od wybranej daty rozpoczęcia i zakończenia.
+
+testestetse
