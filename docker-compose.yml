@@ -11,6 +11,7 @@ services:
       - db
     environment:
       - POSTGRES_DB=integration_db
+      - DB_URL=db
       - DATA_STEAM_PATH=/app/data/SteamModified.csv
       - DATA_TWITCH_PATH=/app/data/Twitch_game_data.csv
       # set to true to initialize data from csv files

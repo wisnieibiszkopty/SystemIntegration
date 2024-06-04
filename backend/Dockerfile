@@ -1,17 +1,4 @@
-#FROM openjdk:17-jdk-slim AS build
-
-## installing maven
-#RUN apt-get update && apt-get install -y maven
-
-#WORKDIR /app
-
-#COPY pom.xml .
-#COPY src ./src
-
-## takes a lot of time
-#RUN mvn clean package -DskipTests
-
-FROM openjdk:17-jdk-slim
+FROM openjdk:17-alpine
 
 LABEL authors="Kamil Wodowski, Paweł Wiński"
 
