@@ -19,6 +19,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 // TODO
 // method to return list of games grouped by genres, name etc...
@@ -72,9 +73,12 @@ public class GameService {
         return gameRepository.findAllBy(pageable);
     }
 
+    //  do czegos to sie przydaje?
     public Page<GameProjection> getGamesByName(String name, int page, int size){
         Pageable pageable = PageRequest.of(page, size);
         return gameRepository.findAllByGameNameContainingIgnoreCase(name, pageable);
     }
-
+    public Optional<Game> getGame(Long gameId){
+        return gameRepository.findById(gameId);
+    }
 }

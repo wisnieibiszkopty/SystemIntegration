@@ -1,12 +1,28 @@
-import {useEffect, useState} from "react";
-import {GameRecord} from "../api/interfaces.ts";
+import React, {useEffect, useRef, useState} from "react";
+import {defaultGame, Game, GameRecord} from "../api/interfaces.ts";
 import {getRecords} from "../api/services/GameRecord.ts";
-import GameRecordComponent from "../components/GameRecordComponent.tsx";
+import {useParams} from "react-router-dom";
+import LineChart from "../components/LineChart.tsx";
+import {Chart} from "chart.js";
+import GameRecordsTable from "../components/GameRecordsTable.tsx";
+import {getGame} from "../api/services/Game.ts";
+import GameInfo from "../components/GameInfo.tsx";
 
-const GameRecordsPage = () => {
-    const [records, setRecords] = useState<GameRecord[]>();
-    const gameId = 3;
+const GameRecordsPage: React.FC = () => {
+    const [records, setRecords] = useState<GameRecord[]>([]);
+    const [game, setGame] = useState<Game>(defaultGame);
+    const { gameId } = useParams<{gameId: string}>();
+    const chartRef = useRef<Chart | null>(null);
+
     useEffect(() => {
+        const fetchGame = async () => {
+            try {
+                const gameData = await getGame(parseInt(gameId));
+                setGame(gameData);
+            } catch (error) {
+                console.error("fetchGame() - error fetching game: ", error);
+            }
+        }
         const fetchRecords = async () => {
             try {
                 const recordsData = await getRecords(gameId);
@@ -15,18 +31,19 @@ const GameRecordsPage = () => {
                 console.error("GamesPage.useEffect() - Error fetching games: ", error);
             }
         };
-
-        fetchRecords().then();
-    }, []);
+        fetchGame().then(fetchRecords);
+    }, [gameId]);
 
     return (
         <>
-            <h2>GameRecords dla id={gameId}</h2>
+            <GameInfo game={game}/>
             <div>
-                {records && records.map((record) => (
-                    <GameRecordComponent record={record} key={record.id}/>
-                ))}
+                <LineChart ref={chartRef} data={records}/>
             </div>
+            <GameRecordsTable records={records}/>
+            <footer>
+                <div className="footer menu-text">@WPWK</div>
+            </footer>
         </>
     )
 }

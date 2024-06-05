@@ -2,7 +2,7 @@ import api from "../axios.ts";
 import {AxiosResponse} from "axios";
 import {GameRecord} from "../interfaces.ts";
 
-export const getRecords = async (gameId: number): Promise<GameRecord[]> => {
+export const getRecords = async (gameId: string): Promise<GameRecord[]> => {
     try {
         const response: AxiosResponse<GameRecord[]> = await api.get(`/api/records/${gameId}`);
         return response.data;

@@ -1,6 +1,7 @@
 package com.project.steamtwitchintegration.controllers;
 
 import com.project.steamtwitchintegration.dto.GamesInfoDto;
+import com.project.steamtwitchintegration.models.Game;
 import com.project.steamtwitchintegration.projections.GameProjection;
 import com.project.steamtwitchintegration.services.GameService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -16,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @Tag(name = "Game", description = "Endpoints for getting info about games")
 @RestController
@@ -75,11 +77,17 @@ public class GameController {
         @Parameter(name = "page", description = "Page number, starting from 0"),
         @Parameter(name = "size", description = "Number of items per page")
     })
-    @GetMapping("/{name}")
-    public ResponseEntity<Page<GameProjection>> findGamesByName(
+    @GetMapping("/byName/{name}")
+    public Page<GameProjection> findGamesByName(
             @PathVariable String name,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "25") int size){
-        return ResponseEntity.ok(gameService.getGamesByName(name, page, size));
+        return gameService.getGamesByName(name, page, size);
+    }
+
+    @ApiResponses({})
+    @GetMapping("/{gameId}")
+    public Optional<Game> findGame(@PathVariable Long gameId){
+        return gameService.getGame(gameId);
     }
 }

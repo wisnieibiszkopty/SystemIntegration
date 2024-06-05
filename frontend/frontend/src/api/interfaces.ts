@@ -1,6 +1,3 @@
-// TODO
-// dokonczyc interfejs gry, czyli wszystkie obiekty wchodzace
-// w relacje z Game też określić interfejsy.
 export interface Game {
     gameName: string;
     id: number;
@@ -33,11 +30,13 @@ export interface GameRecord {
     game: Game;
     year: string;
     month: string;
+    time: Date;
+    timestamp: string;
     steamStats: SteamStats;
     twitchStats: TwitchStats;
 }
 
-interface SteamStats {
+export interface SteamStats {
     id: number;
     record: GameRecord;
     steamAveragePlayers: number;
@@ -46,7 +45,7 @@ interface SteamStats {
     steamAvgPeakPerc: string;
 }
 
-interface TwitchStats {
+export interface TwitchStats {
     id: number;
     record: GameRecord;
     twitchHoursWatched: number;
