@@ -40,7 +40,25 @@
 .read-the-docs {
   color: #888;
 }
+header {
+
+}
+.filter-widget {
+  display: flex;
+  width: 95%;
+  flex-flow: row;
+  justify-content: end;
+}
+.input-filter {
+  display: flex;
+  flex-flow: row;
+  margin-left: 20px;
+}
+.input-filter button {
+  background: #3b3b3b;
+}
 .game-cards-container {
+  margin-top: 15px;
   display: flex;
   flex-wrap: wrap;
   gap: 15px;
@@ -75,24 +93,31 @@
 
 .game-info {
   display: flex;
+
 }
 .game-details {
+
   display: flex;
   flex-flow: column;
 }
 .game-tags-container {
+  padding: 15px;
+  border-radius: 5px;
+  background: #2a2a2a;
   display: flex;
-  justify-content: space-between;
 }
 .game-tag {
+  margin-left: 15px;
   border: 2px solid gray;
   padding: 2px 10px 3px 10px;
   background: #233131;
   border-radius: 15px;
 }
 .game-rating {
-  position: relative;
-  top: 50px;
+  padding: 15px;
+  border-radius: 5px;
+  background: #2a2a2a;
+  margin-top: 30px;
   text-align: left;
 }
 table {

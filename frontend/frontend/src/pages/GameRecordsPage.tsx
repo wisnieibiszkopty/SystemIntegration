@@ -41,6 +41,9 @@ const GameRecordsPage: React.FC = () => {
                 <LineChart ref={chartRef} data={records}/>
             </div>
             <GameRecordsTable records={records}/>
+            <footer>
+                <div className="footer menu-text">@WPWK</div>
+            </footer>
         </>
     )
 }

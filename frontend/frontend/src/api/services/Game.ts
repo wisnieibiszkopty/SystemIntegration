@@ -10,6 +10,7 @@ export const getGames = async (page: number, size: number): Promise<any> => {
                 size: size,
             }
         });
+        console.log(response.data);
         return response.data;
     } catch (error) {
         console.error("getGames() - Error calling api: ", error);

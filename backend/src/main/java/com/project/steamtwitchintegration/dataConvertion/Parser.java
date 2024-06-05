@@ -93,7 +93,7 @@ public class Parser {
                                 .ifPresent(game -> {
                                     record.setGame(game);
                                     game.getGameRecords().add(record);
-                                    //log.info("Added record to " + game.getGameName());
+//                                    log.info("Added record to " + game.getGameName());
                                 });
                     });
 

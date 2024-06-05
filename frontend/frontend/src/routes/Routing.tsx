@@ -1,13 +1,15 @@
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import GamesPage from "../pages/GamesPage.tsx";
 import GameRecordsPage from "../pages/GameRecordsPage.tsx";
-import Test from "../pages/test.tsx";
+import MainPage from "../pages/MainPage.tsx";
+import WelcomePage from "../pages/WelcomePage.tsx";
 
 const Routing = () => {
     return (
         <BrowserRouter>
             <Routes>
-                <Route path={"/"} element={<Test/>}/>
+                <Route path={"/"} element={<WelcomePage/>}/>
+                <Route path={"/dashboard"} element={<MainPage/>}/>
                 <Route path={"/games"} element={<GamesPage/>}/>
                 <Route path={"/games/:gameId/records"} element={<GameRecordsPage/>}/>
                 <Route path="*" element={

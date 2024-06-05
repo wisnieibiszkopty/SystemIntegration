@@ -7,7 +7,7 @@ const GameCard: React.FC<{ game: Game}> = ({game}) => {
         // TODO
         // obrazek nie działa, albo nie ładuja sie bo za dlugo to trwa aby pobrac z bazy
         <Link to={`/games/${game.id}/records`} className={'game-card'}>
-            <img src={game.coverUrl} alt={'game_icon'} className={'game-icon'}/>
+            <img src={game.coverUrl} alt={'game_icon'} className={''}/>
             {game.gameName}
         </Link>
     )

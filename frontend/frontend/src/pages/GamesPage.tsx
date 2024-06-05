@@ -1,6 +1,7 @@
 import React, {useState} from "react";
 import GameCard from "../components/GameCard.tsx";
 import {useGameContext} from "../contexts/GameContext.tsx";
+import InputField from "../components/InputField.tsx";
 
 const GamesPage = () => {
     const {games, filteredGames, setFilteredGames} = useGameContext();
@@ -58,7 +59,7 @@ const GamesPage = () => {
     return (
         <>
             <header>
-                <h2>GIERKI</h2>
+                <h2>LISTA GIER</h2>
                 <div className={'filter-widget'}>
                     <select value={selectedType} onChange={handleTypeChange} disabled={false}>
                         <option value="">narazie nei dziala</option>
@@ -68,14 +69,19 @@ const GamesPage = () => {
                             </option>
                         ))}
                     </select>
-                    <input
-                        type='text'
-                        value={searchItem}
-                        onChange={handleFilterChange}
-                    />
-                    <button onClick={resetFilter} style={{fontSize: '55%'}}>
-                        ❌
-                    </button>
+                    <div className={'input-filter'}>
+                        <InputField
+                            label={''}
+                            name={''}
+                            type={'text'}
+                            value={searchItem}
+                            onChange={handleFilterChange}
+                            placeholder={'Wprowadź nazwę gry...'}
+                        />
+                        <button onClick={resetFilter} style={{fontSize: '55%'}}>
+                            ❌
+                        </button>
+                    </div>
                 </div>
             </header>
             <div className={'game-cards-container'}>
@@ -83,6 +89,9 @@ const GamesPage = () => {
                     <GameCard key={game.id} game={game}/>
                 ))}
             </div>
+            <footer>
+                <div className="footer menu-text">@WPWK</div>
+            </footer>
         </>
     )
 }
