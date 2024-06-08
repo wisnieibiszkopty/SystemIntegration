@@ -1,0 +1,75 @@
+name: System integration project workflow
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+   web-build:
+     runs-on: ubuntu-latest
+
+     steps:
+       - name: Checkout repository
+         uses: actions/checkout@v3
+
+       - name: Set up Node 18
+         uses: actions/setup-node@v2
+         with:
+           node-version: '18'
+
+       - name: Set up QEMU
+         uses: docker/setup-qemu-action@v2
+
+       - name: Set up Docker Buildx
+         uses: docker/setup-buildx-action@v2
+
+       - name: Log in to Docker Hub
+         uses: docker/login-action@v2
+         with:
+           username: ${{ secrets.DOCKERHUB_USERNAME }}
+           password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+       - name: Build and push Docker image
+         uses: docker/build-push-action@v4
+         with:
+           context: ./frontend/frontend
+           file: ./frontend/frontend/Dockerfile
+           push: true
+           tags: kamilwodowski/is-web:latest
+
+   backend-build:
+     runs-on: ubuntu-latest
+
+     steps:
+       - name: Checkout repository
+         uses: actions/checkout@v4
+
+#       - name: Set up JDK 17
+#         uses: actions/setup-java@v4
+#         with:
+#           java-version: '17'
+#           distribution: 'adopt'
+#           cache: maven
+#
+#       - name: Build with Maven
+#         run: mvn clean package -DskipTests --file pom.xml
+#         working-directory: backend
+
+       - name: Set up Docker Buildx
+         uses: docker/setup-buildx-action@v2
+
+       - name: Log in to Docker Hub
+         uses: docker/login-action@v2
+         with:
+           username: ${{ secrets.DOCKERHUB_USERNAME }}
+           password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+       - name: Build and push Docker image
+         uses: docker/build-push-action@v4
+         with:
+          context: ./backend
+          file: ./backend/Dockerfile
+          push: true
+          tags: kamilwodowski/is-backend:latest

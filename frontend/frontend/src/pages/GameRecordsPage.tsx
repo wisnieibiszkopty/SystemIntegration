@@ -36,6 +36,13 @@ const GameRecordsPage: React.FC = () => {
 
     return (
         <>
+            <div>
+                <h2>Exports</h2>
+                {/* nie wiem jak wziąć base url i napisz sobie ładniejsze*/}
+                <a href={"http://localhost:8080/api/exports/json/" + game.id } download={"data_" + game.id + ".json"}>Json</a> |
+                <a href={"http://localhost:8080/api/exports/xml/" + game.id} download={"data_" + game.id + ".xml"}>Xml</a> |
+                <a href={"http://localhost:8080/api/exports/csv/" + game.id} download={"data_" + game.id + ".csv"}>Csv</a>
+            </div>
             <GameInfo game={game}/>
             <div>
                 <LineChart ref={chartRef} data={records}/>
