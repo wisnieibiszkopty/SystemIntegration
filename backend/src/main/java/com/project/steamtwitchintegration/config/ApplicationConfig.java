@@ -1,5 +1,6 @@
 package com.project.steamtwitchintegration.config;
 
+import com.project.steamtwitchintegration.exceptions.UserDoesntExistException;
 import com.project.steamtwitchintegration.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -22,7 +23,7 @@ public class ApplicationConfig {
     @Bean
     public UserDetailsService userDetailsService(){
         return username -> userRepository.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found!"));
+                .orElseThrow(() -> new UserDoesntExistException("User not found!"));
     }
 
     @Bean
