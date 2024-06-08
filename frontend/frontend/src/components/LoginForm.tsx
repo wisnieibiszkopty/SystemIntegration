@@ -1,49 +1,40 @@
-import React, { useState, ChangeEvent } from 'react';
+import React, {useState, ChangeEvent, FormEvent} from 'react';
 import InputField from './InputField';
-// import { loginUser } from '../../api/services/User';
-// import { validateLogin } from '../Form/validation';
-
-interface FormData {
-    email: string;
-    password: string;
-}
-
-interface FormErrors {
-    email?: string;
-    password?: string;
-    [key: string]: string | undefined;
-}
+import {LoginFormData, LoginFormErrors} from "../api/interfaces.ts";
+import {validateLogin} from './validation.ts';
+import {loginUser} from "../api/services/User.ts";
+import {redirect} from "react-router-dom";
 
 const LoginForm: React.FC = () => {
-    const [formData, setFormData] = useState<FormData>({
+    const [formData, setFormData] = useState<LoginFormData>({
         email: '',
         password: ''
     });
-    const [formErrors, setFormErrors] = useState<FormErrors>({});
+    const [formErrors, setFormErrors] = useState<LoginFormErrors>({});
 
+    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        // Logika obsługi logowania
+        // walidacja
+        const validationResults = validateLogin(formData);
+        if (Object.keys(validationResults).length > 0) {
+            setFormErrors(validationResults);
+            return;
+        }
 
-    // const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    //     e.preventDefault();
-    //     // Logika obsługi logowania
-    //     // walidacja
-    //     const validationResults = validateLogin(formData);
-    //     if (Object.keys(validationResults).length > 0) {
-    //         setFormErrors(validationResults);
-    //         return;
-    //     }
-    //
-    //     try {
-    //         await loginUser(formData);
-    //         //Logika po zalogowaniu - redirect
-    //         navigate('/vGarage');
-    //     } catch (error: any) {
-    //         // odbiór odpowiedzi z walidacji od serwera i wyswietlenie jej w alercie na stronie
-    //         console.log(error.response ? error.response.data : error.message);
-    //         const message = (error.response ? error.response.data.message : error.message);
-    //         // console.log(error.response.data.error.errors);
-    //         alert(`${message}`);
-    //     }
-    // };
+        try {
+            const response =  await loginUser(formData);
+            console.log(response.data)
+            //Logika po zalogowaniu - redirect
+            redirect('/games');
+        } catch (error: any) {
+            // odbiór odpowiedzi z walidacji od serwera i wyswietlenie jej w alercie na stronie
+            console.log(error.response ? error.response.data : error.message);
+            const message = (error.response ? error.response.data.message : error.message);
+            // console.log(error.response.data.error.errors);
+            alert(`${message}`);
+        }
+    };
 
     const handleReset = () => {
         setFormData({
@@ -71,7 +62,7 @@ const LoginForm: React.FC = () => {
     return (
         <div className="modal-form-body">
             <form
-                // onSubmit={handleSubmit}
+                onSubmit={handleSubmit}
                 onReset={handleReset}
                 className="modal-body">
                 <div>

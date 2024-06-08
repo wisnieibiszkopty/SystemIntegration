@@ -1,63 +1,48 @@
-import React, { useState, ChangeEvent } from 'react';
+import React, {useState, ChangeEvent, FormEvent} from 'react';
 import InputField from './InputField';
-// import { registerUser } from '../../api/services/User';
-// import { validateRegister } from '../Form/validation';
-
-
-interface FormData {
-    email: string;
-    username: string;
-    password: string;
-    passwordCheck: string;
-}
-
-interface FormErrors {
-    email?: string;
-    username?: string;
-    password?: string;
-    passwordCheck?: string;
-    [key: string]: string | undefined;
-}
+import {registerUser} from "../api/services/User.ts";
+import {validateRegister} from './validation.ts';
+import {RegisterFormData, RegisterFormErrors} from "../api/interfaces.ts";
+import {redirect} from "react-router-dom";
 
 const RegisterForm: React.FC = () => {
-    const [formData, setFormData] = useState<FormData>({
+    const [formData, setFormData] = useState<RegisterFormData>({
         email: '',
         username: '',
         password: '',
         passwordCheck: ''
     });
-    const [formErrors, setFormErrors] = useState<FormErrors>({});
+    const [formErrors, setFormErrors] = useState<RegisterFormErrors>({});
+    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        // Logika obsługi przesłania formularza rejestracji
 
-    // const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    //     e.preventDefault();
-    //     // Logika obsługi przesłania formularza rejestracji
-    //
-    //     // walidacja
-    //     const validationResults = validateRegister(formData);
-    //     if (Object.keys(validationResults).length > 0) {
-    //         setFormErrors(validationResults);
-    //         return;
-    //     }
-    //
-    //     try {
-    //         // Sprawdz czy hasła się zgadzają
-    //         if (formData.password === formData.passwordCheck) {
-    //             // Logika po zarejestrowaniu - redirect
-    //             console.log('user: ', formData);
-    //             const response = await registerUser(formData);
-    //             console.log('response: ', response.data.message);
-    //             navigate('/login');
-    //         } else {
-    //             setFormErrors({ passwordCheck: 'Hasła nie pasują do siebie' });
-    //         }
-    //     } catch (error: any) {
-    //         // odbiór odpowiedzi z walidacji od serwera i wyswietlenie jej w alercie na stronie
-    //         console.log(error.response ? error.response.data : error.message);
-    //         const message = (error.response ? error.response.data.message : error.message);
-    //         alert(`${message}`);
-    //         handleReset();
-    //     }
-    // };
+        // walidacja
+        const validationResults = validateRegister(formData);
+        if (Object.keys(validationResults).length > 0) {
+            setFormErrors(validationResults);
+            return;
+        }
+
+        try {
+            // Sprawdz czy hasła się zgadzają
+            if (formData.password === formData.passwordCheck) {
+                // Logika po zarejestrowaniu - redirect
+                console.log('user: ', formData);
+                const response = await registerUser(formData);
+                console.log('response: ', response.data);
+                redirect('/games');
+            } else {
+                setFormErrors({ passwordCheck: 'Hasła nie pasują do siebie' });
+            }
+        } catch (error: any) {
+            // odbiór odpowiedzi z walidacji od serwera i wyswietlenie jej w alercie na stronie
+            console.log(error.response ? error.response.data : error.message);
+            const message = (error.response ? error.response.data.message : error.message);
+            alert(`${message}`);
+            handleReset();
+        }
+    };
 
     const handleReset = () => {
         setFormData({
@@ -87,7 +72,7 @@ const RegisterForm: React.FC = () => {
     return (
         <div className="modal-form-body">
             <form
-                // onSubmit={handleSubmit}
+                onSubmit={handleSubmit}
                 onReset={handleReset}
                 className="modal-body">
                 <div>
