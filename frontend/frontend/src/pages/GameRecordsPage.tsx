@@ -18,9 +18,8 @@ const GameRecordsPage: React.FC = () => {
             try {
                 console.log("FETCHRECORDS START");
                 const recordsData = await getRecords(game.id);
-                console.log("FETCHRECORDS END");
                 setRecords(recordsData);
-                console.log("FETCHRECORDS SET");
+                console.log("FETCHRECORDS END");
             } catch (error) {
                 console.error("GamesPage.useEffect() - Error fetching games: ", error);
             }
@@ -31,10 +30,11 @@ const GameRecordsPage: React.FC = () => {
     return (
         <>
             <GameInfo game={game}/>
+
             <div>
-                {records.length!==0 && <LineChart ref={chartRef} data={records}/>}
+                {records.length !== 0 && <LineChart ref={chartRef} data={records}/>}
             </div>
-            {records.length!==0 && <GameRecordsTable records={records}/>}
+            {records.length !== 0 && <GameRecordsTable records={records}/>}
             <footer>
                 <div className="footer menu-text">@WPWK</div>
             </footer>

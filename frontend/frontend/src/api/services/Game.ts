@@ -17,6 +17,10 @@ export const getGames = async (page: number, size: number): Promise<any> => {
         return [];
     }
 };
+export const exportGame = (format: string, gameId?: number): string => {
+    const baseUrl = "http://localhost:8080/api/exports";
+    return gameId !== undefined ? `${baseUrl}/${format}/${gameId}` : `${baseUrl}/${format}`;
+};
 export const getGame = async (gameId: number): Promise<Game> => {
     try {
         const response: AxiosResponse<Game> = await api.get(`/api/games/${gameId}`);

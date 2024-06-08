@@ -9,6 +9,7 @@ import java.util.List;
 public interface GameProjection {
 
     Long getId();
+    String getCoverUrl();
     String getGameName();
     double getRating();
     int getRatingCount();

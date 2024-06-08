@@ -43,6 +43,12 @@
 header {
 
 }
+.header-title {
+  display: flex;
+  flex-flow: row;
+  height: 150px;
+  justify-content: space-evenly;
+}
 .pagination {
   display: flex;
   justify-content: start;
@@ -98,10 +104,10 @@ header {
 
 .game-info {
   display: flex;
-
+  width: 1280px;
 }
 .game-details {
-
+  width: 980px;
   display: flex;
   flex-flow: column;
 }
@@ -142,7 +148,35 @@ td {
   border-right: 1px solid rgba(255, 255, 255, 0.29);
   border-left: 1px solid rgba(255, 255, 255, 0.29);
 }
-.chartjs-legend li.hidden {
-  color: rebeccapurple;
+.data-export-panel {
+  margin-left: 150px;
+  margin-top: 45px;
+  display: flex;
 }
-
+.data-export-container {
+  width: 100%;
+}
+.data-export-panel-links {
+  width: 100%;
+  display: flex;
+  flex-flow: row;
+  align-items: center;
+}
+.data-export-panel a {
+  width: 200px;
+  background: #242424;
+  color: #00a5eb;
+  padding: 2px;
+  font-size: 125%;
+  margin: 5px;
+  border-radius: 20px 0 0 0;
+  border: #a6a6a6 solid 2px;
+  box-shadow: black 1px 2px 15px 0;
+  transition: transform 0.3s ease;
+}
+.data-export-panel a:hover {
+  background: #373737;
+  border-color: white;
+  transform: translate(-5px, -1px);
+  box-shadow: black 5px 5px 10px ;
+}

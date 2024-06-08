@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import GameCard from "../components/GameCard.tsx";
 import {useGameContext} from "../contexts/GameContext.tsx";
 import InputField from "../components/InputField.tsx";
+import DataExportPanel from "../components/DataExportPanel.tsx";
 
 const GamesPage = () => {
     const {games, filteredGames, setFilteredGames} = useGameContext();
@@ -37,10 +38,7 @@ const GamesPage = () => {
         { id: 34, name: 'Visual Novel' },
         { id: 35, name: 'Card & Board Game' }
     ];
-
-
-    // TODO
-    // dodac eksport dla wszystkich, i dla poszczegolnych danych
+    console.log(games);
     const filterGames = (name: string, type: number | undefined, genre: number | undefined) => {
         let temp = games;
 
@@ -61,7 +59,6 @@ const GamesPage = () => {
                 game.genres.some(genreObj => genreObj.id === genre)
             );
         }
-
         setFilteredGames(temp);
         setCurrentPage(1);
     };
@@ -99,11 +96,21 @@ const GamesPage = () => {
     return (
         <>
             <header>
-                <h2>LISTA GIER</h2>
+                <div className={'header-title'}>
+                    <h1>LISTA GIER</h1>
+                    <DataExportPanel/>
+                </div>
                 <div className={'filter-widget'}>
                     <div className={'pagination'}>
                         <div className="">
-                            {searchItem === '' && Array.from({length: totalPages}, (_, i) => i + 1).map(page => (
+                            <button onClick={() => {
+                                if (currentPage > 1) handlePageChange(currentPage - 1);
+                            }}
+                                    disabled={currentPage===1}
+                            >
+                                ←
+                            </button>
+                            {Array.from({length: totalPages}, (_, i) => i + 1).map(page => (
                                 <button
                                     key={page}
                                     onClick={() => handlePageChange(page)}
@@ -113,6 +120,13 @@ const GamesPage = () => {
                                     {page}
                                 </button>
                             ))}
+                            <button onClick={() => {
+                                if (currentPage < totalPages) handlePageChange(currentPage + 1);
+                            }}
+                                disabled={currentPage===totalPages}
+                            >
+                                →
+                            </button>
                         </div>
                     </div>
                     <select value={selectedType} onChange={handleTypeChange} style={{height: '30px'}}>
