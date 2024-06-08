@@ -11,19 +11,6 @@ export interface Game {
     genres: GameGenre[];
     modes: GameMode[];
 }
-export const defaultGame: Game = {
-    id: 0,
-    gameName: '',
-    coverUrl: '',
-    rating: 0,
-    ratingCount: 0,
-    totalRating: 0,
-    totalRatingCount: 0,
-    gameRecords: [],
-    perspectives: [],
-    genres: [],
-    modes: []
-}
 
 export interface GameRecord {
     id: number;
