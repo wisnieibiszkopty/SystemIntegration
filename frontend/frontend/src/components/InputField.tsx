@@ -20,20 +20,22 @@ const InputField: React.FC<InputFieldProps> = ({
    error
 }) => {
     return (
-        <div className="form-group">
-            <label className="font-semibold capitalize"
+        <div>
+            <label
                    style={{
                        color: 'white',
+                       marginRight: '10px'
                    }}>
                 {label}
             </label>
             <input
+                style={{height: '25px'}}
                 type={type}
                 name={name}
                 value={value}
                 onChange={onChange}
                 placeholder={placeholder}
-                className={`form-control ${error ? 'is-invalid' : ''}`}
+                className={`${error ? 'is-invalid' : ''}`}
 
             />
             {error && <span className="text-danger">{error}</span>}
