@@ -1,63 +1,54 @@
 package com.project.steamtwitchintegration;
 
-import com.project.steamtwitchintegration.dataConvertion.CsvParser;
-import com.project.steamtwitchintegration.dataConvertion.Filetype;
-import com.project.steamtwitchintegration.repositories.SteamGameRepository;
-import com.project.steamtwitchintegration.repositories.TwitchGameRepository;
+import com.project.steamtwitchintegration.dataConvertion.*;
+import com.project.steamtwitchintegration.repositories.GameRepository;
+import com.project.steamtwitchintegration.services.IGDBService;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Path;
 
 @Slf4j
 @Component
 public class DatabaseInitializer implements CommandLineRunner {
+    private final GameRepository gameRepository;
+    private Parser parser;
+    private final IGDBService igdbService;
 
-    private final SteamGameRepository steamRepository;
-    private final TwitchGameRepository twitchRepository;
+    @Value("${LOAD_DATA:false}")
+    private boolean loadDataOnStartup;
 
-    public DatabaseInitializer(SteamGameRepository steamRepository, TwitchGameRepository twitchRepository) {
-        this.steamRepository = steamRepository;
-        this.twitchRepository = twitchRepository;
+    public DatabaseInitializer(IGDBService igdbService, GameRepository gameRepository, Parser parser) {
+        this.igdbService = igdbService;
+        this.gameRepository = gameRepository;
+        this.parser = parser;
     }
 
     @Override
     public void run(String... args) throws Exception {
-        CsvParser csvParser = new CsvParser();
+        if(loadDataOnStartup){
+            igdbService.loadTwitchToken();
+            igdbService.loadGameGeneralInfo();
 
-        // Loading data about games from Steam
-        ClassPathResource steamResource = new ClassPathResource("data/SteamCharts.csv");
-        Path steamPath = steamResource.getFile().toPath();
-        csvParser.importData(steamPath.toString());
+            CsvParser csvParser = new CsvParser();
 
-//		csvParser.exportData("src/main/resources/data/SteamTEST.csv", Filetype.CSV);
-//		csvParser.exportData("src/main/resources/data/SteamTEST.json", Filetype.JSON);
-//		csvParser.exportData("src/main/resources/data/SteamTEST.xml", Filetype.XML);
+            InputStream steamStream = getClass().getResourceAsStream("/data/SteamModified.csv");
+            InputStream twitchStream = getClass().getResourceAsStream("/data/Twitch_game_data.csv");
 
-        csvParser.loadSteamGames();
-        steamRepository.saveAll(csvParser.getSteamGames());
+            log.info("Loading data... ");
 
-        log.info("Loaded steam games");
-        System.out.println(csvParser);
+            csvParser.importData(steamStream);
+            csvParser.importData(twitchStream);
 
-        // Loading data about games form Twitch
-        ClassPathResource twitchResource = new ClassPathResource("data/Twitch_game_data.csv");
-        Path twitchPath = twitchResource.getFile().toPath();
-        csvParser.importData(twitchPath.toString());
+            parser.loadGames();
+            igdbService.loadGamesInfo();
 
-//		csvParser.exportData("src/main/resources/data/TwitchTEST.csv", Filetype.CSV);
-//		csvParser.exportData("src/main/resources/data/TwitchTEST.json", Filetype.JSON);
-//		csvParser.exportData("src/main/resources/data/TwitchTEST.xml", Filetype.XML);
-        csvParser.loadTwitchGames();
-        twitchRepository.saveAll(csvParser.getTwitchGames());
-
-        log.info("Loaded twitch games");
-        System.out.println(csvParser);
-
-        csvParser.showgames();
+            log.info("Finished loading data");
+        }
     }
-
 }

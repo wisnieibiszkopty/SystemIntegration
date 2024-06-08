@@ -1,100 +1,94 @@
 package com.project.steamtwitchintegration.dataConvertion;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 import com.opencsv.exceptions.CsvException;
-import com.project.steamtwitchintegration.models.SteamGame;
-import com.project.steamtwitchintegration.models.TwitchGame;
-import lombok.Getter;
-import lombok.Setter;
+import com.project.steamtwitchintegration.models.*;
 
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
-@Getter
-@Setter
-public class CsvParser implements DataParser {
+public class CsvParser extends Parser implements DataParser {
+    String STEAM_CSV_CONDITION = "gamename";
+    String TWITCH_CSV_CONDITION = "Rank";
     public List<String[]> csv;
     public String[] csvFirstRow;
-    public List<SteamGame> steamGames;
-    public List<TwitchGame> twitchGames;
-
     @Override
-    public void importData(String sourcePath) {
+    public void importData(InputStream inputStream) {
         this.csv = new ArrayList<>();
-        try (CSVReader reader = new CSVReader(new FileReader(sourcePath))) {
+        try (CSVReader reader = new CSVReader(new InputStreamReader(inputStream))) {
             this.csv = reader.readAll();
         } catch (IOException | CsvException e) {
             throw new RuntimeException(e);
         }
 //        odcina pierwszy wiersz z nagłówkiem
         csvFirstRow = this.csv.get(0);
-//        ucina pierwszy wiersz ( z nagłówkami ) i bierze tylko do 5tego ( do testów aby mniej mieliło )
-        this.csv = csv.subList(1,5);
+//        ucina pierwszy wiersz ( z nagłówkami ) i bierze tylko do  n-tego ( do testów aby mniej mieliło )
+        this.csv.remove(0);
+        if (csvFirstRow[0].equals(STEAM_CSV_CONDITION)) {
+            loadSteamGames();
+        } else if (csvFirstRow[0].equals(TWITCH_CSV_CONDITION)) {
+            loadTwitchGames();
+        } else {
+            System.out.println("CsvParser.importData() error");
+        }
     }
 
     @Override
-    public void exportData(String destinationPath, Filetype filetype) {
-        String STEAM_CSV_CONDITION = "gamename";
-        String TWITCH_CSV_CONDITION = "Rank";
-        switch (filetype){
-            case CSV -> {
-                try (CSVWriter writer = new CSVWriter(new FileWriter(destinationPath))) {
-                    writer.writeNext(csvFirstRow);
-                    writer.writeAll(this.csv);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+    public void exportData(OutputStream outputStream, List<Game> gamesToExport) {
+        String[] headers = {
+                "game",
+                "year",
+                "month",
+                "steamAvergePlayers",
+                "steamGainPlayers",
+                "steamPeakPlayers",
+                "steamAvgPeakPerc",
+                "twitchHoursWatched",
+                "twitchHoursStreamed",
+                "twitchPeakViewers",
+                "twitchPeakChannels",
+                "twitchStreamers",
+                "twitchAvgViewers",
+                "twitchAvgChannels",
+                "twitchAvgViewerRatio"
+        };
+        try (CSVWriter writer = new CSVWriter(new OutputStreamWriter(outputStream))) {
+            writer.writeNext(headers);
+            List<String[]> csv = new ArrayList<>();
+            for (Game game : gamesToExport) {
+                for (GameRecord gameRecord : game.getGameRecords()) {
+                    SteamStats steamStats = gameRecord.getSteamStats();
+                    TwitchStats twitchStats = gameRecord.getTwitchStats();
+                    String[] csvGameRecord = {
+
+                            game.getGameName(),
+                            gameRecord.getYear(),
+                            gameRecord.getMonth(),
+
+                            Double.toString(steamStats.getSteamAveragePlayers()),
+                            Double.toString(steamStats.getSteamGainPlayers()),
+                            Integer.toString(steamStats.getSteamPeakPlayers()),
+                            steamStats.getSteamAvgPeakPerc(),
+
+                            Integer.toString(twitchStats.getTwitchHoursWatched()),
+                            Integer.toString(twitchStats.getTwitchHoursStreamed()),
+                            Integer.toString(twitchStats.getTwitchPeakViewers()),
+                            Integer.toString(twitchStats.getTwitchPeakChannels()),
+                            Integer.toString(twitchStats.getTwitchStreamers()),
+                            Integer.toString(twitchStats.getTwitchAvgViewers()),
+                            Integer.toString(twitchStats.getTwitchAvgChannels()),
+                            Double.toString(twitchStats.getTwitchAvgViewerRatio()),
+                    };
+                    csv.add(csvGameRecord);
                 }
             }
-            case JSON -> {
-                ObjectMapper mapper = new ObjectMapper();
-                try {
-
-                    if (csvFirstRow[0].equals(STEAM_CSV_CONDITION)){
-                        mapper.writeValue(new File(destinationPath), steamGames);
-                    } else if (csvFirstRow[0].equals(TWITCH_CSV_CONDITION)) {
-                        mapper.writeValue(new File(destinationPath), twitchGames);
-                    }
-
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            case XML -> {
-                XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
-                String objectName = (csvFirstRow[0].equals(STEAM_CSV_CONDITION)) ? "SteamGamesStats" : "TwitchGamesStats";
-                try {
-                    XMLStreamWriter writer = outputFactory.createXMLStreamWriter(new FileOutputStream(destinationPath), "UTF-8");
-                    ArrayList<String> localNames = new ArrayList<>(Arrays.asList(csvFirstRow));
-
-                    writer.writeStartDocument("UTF-8", "1.0");
-                    writer.writeStartElement(objectName);
-                    for (String[] s : csv){
-                        writer.writeStartElement("Game");
-                        int i = 0;
-                        for (String temp : s){
-                            writer.writeStartElement(localNames.get(i));
-                            writer.writeCharacters(temp);
-                            writer.writeEndElement();
-                            i++;
-                        }
-                        writer.writeEndElement();
-                    }
-                    writer.writeEndElement();
-                    writer.writeEndDocument();
-                    writer.flush();
-                    writer.close();
-
-                } catch (XMLStreamException | FileNotFoundException e) {
-                    throw new RuntimeException(e);
-                }
-            }
+            writer.writeAll(csv);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -111,30 +105,33 @@ public class CsvParser implements DataParser {
         return sb.toString();
     }
 
-    @Override
     public void loadSteamGames(){
-        this.steamGames = new ArrayList<>();
+        setSteamGames(new ArrayList<>());
         for (String[] s : csv) {
             if (s.length == 7){
                 SteamGame game = new SteamGame();
                 game.setName(s[0]);
                 game.setYear(s[1]);
-                game.setMonth(s[2]);
+                //game.setMonth(s[2]);
+                game.setMonth(monthConverterToNumber(s[2]));
                 game.setAverage(Double.parseDouble(s[3]));
                 game.setGain(Double.parseDouble(s[4]));
                 game.setPeak(Integer.parseInt(s[5]));
                 game.setAveragePeakPercent(s[6]);
-                this.steamGames.add(game);
+                steamGames.add(game);
+//                addGameByName(game.getName());
             }
         }
     }
-    @Override
     public void loadTwitchGames(){
-        this.twitchGames = new ArrayList<>();
+        setTwitchGames(new ArrayList<>());
         for (String[] s : csv){
             if (s.length == 12) {
                 TwitchGame game = new TwitchGame();
                 game.setTitle(s[1]);
+                // instead of mapping numeric months to words inverting it,
+                // so it can be easier drawn on plot
+                //game.setMonth(monthConvert(s[2]));
                 game.setMonth(s[2]);
                 game.setYear(s[3]);
                 game.setHoursWatched(Integer.parseInt(s[4]));
@@ -146,11 +143,10 @@ public class CsvParser implements DataParser {
                 game.setAverageChannels(Integer.parseInt(s[10]));
                 game.setAverageViewerRatio(Double.parseDouble(s[11]));
                 twitchGames.add(game);
+//                addGameByName(game.getTitle());
             }
         }
     }
-    public void showgames() {
-        steamGames.forEach(System.out::println);
-        twitchGames.forEach(System.out::println);
-    }
+
+
 }
