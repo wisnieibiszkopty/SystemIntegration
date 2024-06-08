@@ -1,9 +1,6 @@
 import {GameRecord} from "../api/interfaces.ts";
 import React from "react";
 
-// TODO
-// Tabela do poprawienia, za mało czytelny sposób wyświetlania danych
-
 const GameRecordsTable: React.FC<{ records: GameRecord[]}> = ({records}) => {
     console.log(records);
     return (

@@ -46,7 +46,7 @@ const LineChart = forwardRef(({data}: PropsType, ref: React.ForwardedRef<any>) =
                 label: label,
                 borderWidth: 1,
                 fill: false,
-                hidden: true,
+                hidden: label !== "Najwięcej graczy jednocześnie",
             }
         ));
         const twitchDataSets = twitchData.map(({data, label}) => (
@@ -55,9 +55,9 @@ const LineChart = forwardRef(({data}: PropsType, ref: React.ForwardedRef<any>) =
                 label: label,
                 borderWidth: 1,
                 fill: false,
-                hidden: true,
+                hidden: label !== "Najwięcej widzów jednocześnie",
             }
-        ))
+        ));
 
 
         const dataSets = [
@@ -93,8 +93,14 @@ const LineChart = forwardRef(({data}: PropsType, ref: React.ForwardedRef<any>) =
                 },
                 plugins: {
                     legend: {
+                        title:{
+                            text: "Dostępne wykresy",
+                            padding: 5,
+                        },
                         display: true,
                         position: 'right',
+                        labels: {
+                        }
                     },
                 }
             }
