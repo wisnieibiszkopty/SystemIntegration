@@ -83,6 +83,12 @@ const GamesPage = () => {
                         </button>
                     </div>
                 </div>
+                <div>
+                    <h2>EXPORTS</h2>
+                    <a href={"http://localhost:8080/api/exports/json"} download="data.json">Json</a>
+                    <a href={"http://localhost:8080/api/exports/xml"} download="data.xml">Xml</a>
+                    <a href={"http://localhost:8080/api/exports/csv"} download="data.csv">Csv</a>
+                </div>
             </header>
             <div className={'game-cards-container'}>
                 {filteredGames && filteredGames.map((game) => (
