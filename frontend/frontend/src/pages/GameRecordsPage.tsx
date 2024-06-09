@@ -7,7 +7,6 @@ import {Chart} from "chart.js";
 import GameRecordsTable from "../components/GameRecordsTable.tsx";
 import GameInfo from "../components/GameInfo.tsx";
 import {useAuthContext} from "../contexts/AuthContext.tsx";
-import {useGameContext} from "../contexts/GameContext.tsx";
 import LoadingSpinner from "../components/LoadingSpinner.tsx";
 
 const GameRecordsPage: React.FC = () => {

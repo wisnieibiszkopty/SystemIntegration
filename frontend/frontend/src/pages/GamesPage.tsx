@@ -10,7 +10,7 @@ import LoadingSpinner from "../components/LoadingSpinner.tsx";
 const GamesPage = () => {
     const {
         games,
-        isLoading, setIsLoading,
+        isLoading,
         filteredGames, setFilteredGames,
         selectedView, setSelectedView,
         selectedType, setSelectedType,

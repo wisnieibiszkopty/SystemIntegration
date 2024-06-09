@@ -5,10 +5,7 @@ import {validateLogin} from './validation.ts';
 import {loginUser} from "../api/services/User.ts";
 import {useNavigate} from "react-router-dom";
 import {useAuthContext} from "../contexts/AuthContext.tsx";
-import {useGameContext} from "../contexts/GameContext.tsx";
 
-
-//TODO if403 to chuj
 const LoginForm: React.FC = () => {
     const {updateToken} = useAuthContext();
     const navigate = useNavigate();
@@ -35,11 +32,10 @@ const LoginForm: React.FC = () => {
             //Logika po zalogowaniu - redirect
             navigate('/games');
         } catch (error: any) {
-            // odbiór odpowiedzi z walidacji od serwera i wyswietlenie jej w alercie na stronie
-            console.log(error.response ? error.response.data : error.message);
-            const message = (error.response ? error.response.data.message : error.message);
-            // console.log(error.response.data.error.errors);
-            // alert(`${message}`);
+            if (error.response.status === 403){
+                alert('Niepoprawne dane logowania!');
+                handleReset();
+            }
         }
     };
 
