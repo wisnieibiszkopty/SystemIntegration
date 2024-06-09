@@ -11,7 +11,7 @@ const WelcomePage: React.FC = () => {
     return (
         <div className={'welcome-body'}>
             <h1>
-                Projekt - Integracja Systemów
+                Zestawienie danych STEAM-TWITCH
             </h1>
             <div className={'welcome-buttons'}>
                 {showLogin ?

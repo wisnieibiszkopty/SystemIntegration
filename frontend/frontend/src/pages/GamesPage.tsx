@@ -1,14 +1,16 @@
-import React, {useState} from "react";
+import React from "react";
 import GameCard from "../components/GameCard.tsx";
 import {useGameContext} from "../contexts/GameContext.tsx";
 import InputField from "../components/InputField.tsx";
 import DataExportPanel from "../components/DataExportPanel.tsx";
 import {useNavigate} from "react-router-dom";
 import {useAuthContext} from "../contexts/AuthContext.tsx";
+import LoadingSpinner from "../components/LoadingSpinner.tsx";
 
 const GamesPage = () => {
     const {
         games,
+        isLoading, setIsLoading,
         filteredGames, setFilteredGames,
         selectedView, setSelectedView,
         selectedType, setSelectedType,
@@ -177,42 +179,47 @@ const GamesPage = () => {
                 </div>
             </header>
 
-            <div className={'game-cards-container'}>
-                <div className={'pagination'}>
-                    <div className="">
-                        <button onClick={() => {
-                            if (currentPage > 1) handlePageChange(currentPage - 1);
-                        }}
-                                disabled={currentPage === 1}
-                        >
-                            ←
-                        </button>
-                        {Array.from({length: totalPages}, (_, i) => i + 1).map(page => (
-                            <button
-                                key={page}
-                                onClick={() => handlePageChange(page)}
-                                disabled={page === currentPage}
-                                className={page === currentPage ? 'active' : ''}
+            {!isLoading ?
+                <div className={'game-cards-container'}>
+                    <div className={'pagination'}>
+                        <div className="">
+                            <button onClick={() => {
+                                if (currentPage > 1) handlePageChange(currentPage - 1);
+                            }}
+                                    disabled={currentPage === 1}
                             >
-                                {page}
+                                ←
                             </button>
-                        ))}
-                        <button onClick={() => {
-                            if (currentPage < totalPages) handlePageChange(currentPage + 1);
-                        }}
-                                disabled={currentPage === totalPages}
-                        >
-                            →
-                        </button>
+                            {Array.from({length: totalPages}, (_, i) => i + 1).map(page => (
+                                <button
+                                    key={page}
+                                    onClick={() => handlePageChange(page)}
+                                    disabled={page === currentPage}
+                                    className={page === currentPage ? 'active' : ''}
+                                >
+                                    {page}
+                                </button>
+                            ))}
+                            <button onClick={() => {
+                                if (currentPage < totalPages) handlePageChange(currentPage + 1);
+                            }}
+                                    disabled={currentPage === totalPages}
+                            >
+                                →
+                            </button>
+                        </div>
                     </div>
+                    {displayedGames && displayedGames.map((game) => (
+                        <GameCard key={game.id} game={game}/>
+                    ))}
                 </div>
-                {displayedGames && displayedGames.map((game) => (
-                    <GameCard key={game.id} game={game}/>
-                ))}
-            </div>
-
+            :
+                <div className={'game-cards-container'}>
+                    <LoadingSpinner/>
+                </div>
+            }
             <footer>
-                <div className="footer menu-text">@WPWK</div>
+                <div>@WPWK</div>
             </footer>
         </>
     )

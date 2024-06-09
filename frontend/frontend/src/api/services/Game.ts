@@ -23,13 +23,4 @@ export const exportGame = (format: string, gameId?: number): string => {
     const baseUrl = "http://localhost:8080/api/exports";
     return gameId !== undefined ? `${baseUrl}/${format}/${gameId}` : `${baseUrl}/${format}`;
 };
-export const exportt = async (token: string) => {
-    try {
-        await api.get("/api/exports/json", {
-            headers: { Authorization: `Bearer ${token}`}
-        });
-    } catch (error) {
-        console.log(error);
-    }
-}
 

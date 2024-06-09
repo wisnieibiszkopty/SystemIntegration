@@ -4,6 +4,23 @@
   padding: 2rem;
   text-align: center;
 }
+.spinner {
+  border: 5px solid #f3f3f3; /* Light grey */
+  border-top: 5px solid #172a38; /* Blue */
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 1s linear infinite;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+footer {
+  margin-top: 50px;
+}
 .logout-button{
   height: 45px;
   color: red;

@@ -20,14 +20,16 @@ export const AuthProvider: React.FC<{children: React.ReactNode}> = ({children}) 
     useEffect(() => {
         const token = localStorage.getItem("token");
         if (token !== null && token !== ''){
+            console.log("useEffectAUTH",token)
             updateToken(token);
         }
-    }, []);
+    }, [token]);
     const updateToken = (accessToken: string) => {
         console.log("updating token");
         setIsAuth(true);
         setToken(accessToken);
         localStorage.setItem("token", accessToken);
+        console.log(token)
     }
     const resetToken = () => {
         setIsAuth(false);

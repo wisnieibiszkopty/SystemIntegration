@@ -5,13 +5,14 @@ import {useAuthContext} from "./AuthContext.tsx";
 
 interface GameContextType {
     games: Game[];
+    isLoading: boolean;
     filteredGames: Game[];
     currentPage: number;
     searchItem: string;
     selectedView: number;
     selectedType: number;
     selectedGenre: number;
-    fetchGames: () => void;
+    setIsLoading: (temp: boolean) => void;
     setFilteredGames: (games: Game[]) => void;
     setCurrentPage: (page: number) => void;
     setSearchItem: (name: string) => void;
@@ -22,13 +23,14 @@ interface GameContextType {
 
 const GameContext = createContext<GameContextType>({
     games: [],
+    isLoading: false,
     filteredGames: [],
     currentPage: 1,
     searchItem: '',
     selectedView: 0,
     selectedType: 0,
     selectedGenre: 0,
-    fetchGames: () => {},
+    setIsLoading: () => {},
     setFilteredGames: () => {},
     setCurrentPage: () => {},
     setSearchItem: () => {},
@@ -48,35 +50,39 @@ export const useGameContext = () => {
 export const GameProvider: React.FC<{children: React.ReactNode}> = ({children}) => {
     const {token, isAuth} = useAuthContext();
     const [games, setGames] = useState<Game[]>([]);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
     const [currentPage, setCurrentPage] = useState(1);
-
     const [searchItem, setSearchItem] = useState('');
     const [filteredGames, setFilteredGames] = useState<Game[]>([]);
     const [selectedView, setSelectedView] = useState<number>();
     const [selectedType, setSelectedType] = useState<number>();
     const [selectedGenre, setSelectedGenre] = useState<number>();
-    const fetchGames = async () => {
-        try {
-            console.log("FETCH GAMES")
-            const gamesData = await getGames(0,100, token);
-            setGames(gamesData.content);
-            setFilteredGames(gamesData.content);
-        } catch (error) {
-            console.error("GameProvider.fetchGames() - Error fetching games: ", error);
-        }
-    }
 
     useEffect(() => {
-        console.log(isAuth);
+        const fetchGames = async () => {
+            setIsLoading(true);
+            try {
+                console.log("FETCH GAMES")
+                const gamesData = await getGames(0,100, token);
+                setGames(gamesData.content.reverse());
+                setFilteredGames(gamesData.content);
+            } catch (error) {
+                console.error("GameProvider.fetchGames() - Error fetching games: ", error);
+            } finally {
+                setIsLoading(false);
+            }
+        }
+
         if (isAuth) fetchGames().then();
-    }, [isAuth]);
+    }, [isAuth, token]);
 
     return (
         <GameContext.Provider value={{
             games,
+            isLoading,
+            setIsLoading,
             filteredGames,
             setFilteredGames,
-            fetchGames,
             selectedView,
             setSelectedView,
             selectedType,

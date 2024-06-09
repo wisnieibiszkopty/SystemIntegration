@@ -13,13 +13,8 @@ const LineChart = forwardRef(({data}: PropsType, ref: React.ForwardedRef<any>) =
     const [chartInst, setChartInst] = useState<Chart<"line", any, unknown> | null>(null);
 
     useEffect(() => {
-        console.log(data);
-
+        console.log("CHART DATA", data);
         Chart.register(LinearScale, LineElement, LineController, CategoryScale, PointElement);
-
-        // typescript don't want to compile
-        console.log(ref);
-
         const labels = data.map(item => `${item.year} ${item.month.trim()}`).reverse();
         console.log(labels);
         const steamStatsData = data.map(item => item.steamStats).reverse();
