@@ -73,61 +73,51 @@ const RegisterForm: React.FC = () => {
     };
 
     return (
-        <div className="modal-form-body">
-            <form
-                onSubmit={handleSubmit}
-                onReset={handleReset}
-                className="modal-body">
-                <div>
-                    <div style={{ marginLeft: '25%', marginRight: '25%', marginBottom: '2%', marginTop: '2%' }}>
-                        <div style={{ width: '100%' }}>
-                            <InputField
-                                label="Adres e-mail"
-                                type="email"
-                                name="email"
-                                value={formData.email}
-                                onChange={handleChange}
-                                placeholder="wprowadź adres email..."
-                                error={formErrors.email}
-                            />
-                            <InputField
-                                label="Nazwa użytkownika"
-                                type="text"
-                                name="username"
-                                value={formData.username}
-                                onChange={handleChange}
-                                placeholder="wprowadź nazwę użytkownika..."
-                                error={formErrors.username}
-                            />
-                            <InputField
-                                label="Hasło"
-                                type="password"
-                                name="password"
-                                value={formData.password}
-                                onChange={handleChange}
-                                placeholder="wprowadź hasło..."
-                                error={formErrors.password}
-                            />
-                            <InputField
-                                label="Potwierdź hasło"
-                                type="password"
-                                name="passwordCheck"
-                                value={formData.passwordCheck}
-                                onChange={handleChange}
-                                placeholder="powtórz hasło..."
-                                error={formErrors.passwordCheck}
-                            />
-                        </div>
-                        <div style={{ width: '100%', display: 'flex', justifyContent: 'center'}}>
-                            <button type="submit" className="form-btn">Załóż konto</button>
-                        </div>
-                    </div>
+        <form onSubmit={handleSubmit} onReset={handleReset}>
+            <div style={{ marginLeft: '25%', marginRight: '25%', marginBottom: '2%', marginTop: '2%' }}>
+                <div className={'form-body'}>
+                    <InputField
+                        label="Adres e-mail"
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        placeholder="wprowadź adres email..."
+                        error={formErrors.email}
+                    />
+                    <InputField
+                        label="Nazwa użytkownika"
+                        type="text"
+                        name="username"
+                        value={formData.username}
+                        onChange={handleChange}
+                        placeholder="wprowadź nazwę użytkownika..."
+                        error={formErrors.username}
+                    />
+                    <InputField
+                        label="Hasło"
+                        type="password"
+                        name="password"
+                        value={formData.password}
+                        onChange={handleChange}
+                        placeholder="wprowadź hasło..."
+                        error={formErrors.password}
+                    />
+                    <InputField
+                        label="Potwierdź hasło"
+                        type="password"
+                        name="passwordCheck"
+                        value={formData.passwordCheck}
+                        onChange={handleChange}
+                        placeholder="powtórz hasło..."
+                        error={formErrors.passwordCheck}
+                    />
                 </div>
-            </form>
-            <footer>
-                <div className="footer menu-text">@WPWK</div>
-            </footer>
-        </div>
+                <div className={'form-button'}>
+                    <button type="submit">Załóż konto</button>
+                </div>
+            </div>
+        </form>
     );
 };
 

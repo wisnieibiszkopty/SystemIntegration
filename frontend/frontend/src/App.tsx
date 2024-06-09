@@ -8,7 +8,7 @@ function App() {
     const {updateToken} = useAuthContext();
     useEffect(() => {
         const token =localStorage.getItem("token");
-        if (token){
+        if (token!==''){
             updateToken(token)
         }
     });

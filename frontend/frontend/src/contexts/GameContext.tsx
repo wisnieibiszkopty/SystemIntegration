@@ -6,15 +6,35 @@ import {useAuthContext} from "./AuthContext.tsx";
 interface GameContextType {
     games: Game[];
     filteredGames: Game[];
-    setFilteredGames: (games: Game[]) => void;
+    currentPage: number;
+    searchItem: string;
+    selectedView: number;
+    selectedType: number;
+    selectedGenre: number;
     fetchGames: () => void;
+    setFilteredGames: (games: Game[]) => void;
+    setCurrentPage: (page: number) => void;
+    setSearchItem: (name: string) => void;
+    setSelectedView: (view: number) => void;
+    setSelectedType: (typeId: number) => void;
+    setSelectedGenre: (genreId: number) => void;
 }
 
 const GameContext = createContext<GameContextType>({
     games: [],
     filteredGames: [],
-    setFilteredGames: () => {},
+    currentPage: 1,
+    searchItem: '',
+    selectedView: 0,
+    selectedType: 0,
+    selectedGenre: 0,
     fetchGames: () => {},
+    setFilteredGames: () => {},
+    setCurrentPage: () => {},
+    setSearchItem: () => {},
+    setSelectedView: () => {},
+    setSelectedType: () => {},
+    setSelectedGenre: () => {},
 });
 
 export const useGameContext = () => {
@@ -28,7 +48,13 @@ export const useGameContext = () => {
 export const GameProvider: React.FC<{children: React.ReactNode}> = ({children}) => {
     const {token, isAuth} = useAuthContext();
     const [games, setGames] = useState<Game[]>([]);
+    const [currentPage, setCurrentPage] = useState(1);
+
+    const [searchItem, setSearchItem] = useState('');
     const [filteredGames, setFilteredGames] = useState<Game[]>([]);
+    const [selectedView, setSelectedView] = useState<number>();
+    const [selectedType, setSelectedType] = useState<number>();
+    const [selectedGenre, setSelectedGenre] = useState<number>();
     const fetchGames = async () => {
         try {
             console.log("FETCH GAMES")
@@ -46,7 +72,22 @@ export const GameProvider: React.FC<{children: React.ReactNode}> = ({children}) 
     }, [isAuth]);
 
     return (
-        <GameContext.Provider value={{games, filteredGames, setFilteredGames, fetchGames}}>
+        <GameContext.Provider value={{
+            games,
+            filteredGames,
+            setFilteredGames,
+            fetchGames,
+            selectedView,
+            setSelectedView,
+            selectedType,
+            selectedGenre,
+            setSelectedType,
+            setSelectedGenre,
+            currentPage,
+            setCurrentPage,
+            searchItem,
+            setSearchItem,
+        }}>
             {children}
         </GameContext.Provider>
     )

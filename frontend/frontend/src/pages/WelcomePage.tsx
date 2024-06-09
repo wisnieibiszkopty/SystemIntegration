@@ -13,7 +13,7 @@ const WelcomePage: React.FC = () => {
             <h1>
                 Projekt - Integracja Systemów
             </h1>
-            <div>
+            <div className={'welcome-buttons'}>
                 {showLogin ?
                     <button
                         onClick={handleShowRegister}
@@ -31,9 +31,6 @@ const WelcomePage: React.FC = () => {
             <div className="form-container">
                 {showLogin ? <LoginForm/> : <RegisterForm/>}
             </div>
-            <footer>
-                <div className="footer menu-text">@WPWK</div>
-            </footer>
         </div>
     )
 }

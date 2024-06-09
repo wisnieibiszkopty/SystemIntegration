@@ -11,6 +11,7 @@ const DataExportPanel: React.FC<{game?: Game}> = ({game}) => {
                         <a href={exportGame('xml', game.id)} download={"data_" + game.gameName + ".xml"}>.xml⬇️</a>
                         <a href={exportGame('csv', game.id)} download={"data_" + game.gameName + ".csv"}>.csv⬇️</a>
                     </div>
+
                 </div>
                 :
                 <div className={'data-export-container'}>

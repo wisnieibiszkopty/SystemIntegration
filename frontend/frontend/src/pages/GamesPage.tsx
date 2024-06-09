@@ -1,17 +1,26 @@
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import GameCard from "../components/GameCard.tsx";
 import {useGameContext} from "../contexts/GameContext.tsx";
 import InputField from "../components/InputField.tsx";
 import DataExportPanel from "../components/DataExportPanel.tsx";
+import {useNavigate} from "react-router-dom";
+import {useAuthContext} from "../contexts/AuthContext.tsx";
 
 const GamesPage = () => {
-    const {games, filteredGames, setFilteredGames, fetchGames } = useGameContext();
-    const [searchItem, setSearchItem] = useState('');
-    const [selectedType, setSelectedType] = useState<number>();
-    const [selectedGenre, setSelectedGenre] = useState<number>();
-    const [currentPage, setCurrentPage] = useState(1);
+    const {
+        games,
+        filteredGames, setFilteredGames,
+        selectedView, setSelectedView,
+        selectedType, setSelectedType,
+        selectedGenre, setSelectedGenre,
+        currentPage, setCurrentPage,
+        searchItem, setSearchItem
+    } = useGameContext();
+
     const itemsPerPage = 14;
     const totalPages = (filteredGames) ? Math.ceil(filteredGames.length / itemsPerPage) : 0;
+    const navigate = useNavigate();
+    const {resetToken} = useAuthContext();
 
     const displayedGames = (filteredGames) ? filteredGames.slice(
         (currentPage - 1) * itemsPerPage,
@@ -39,7 +48,17 @@ const GamesPage = () => {
         { id: 35, name: 'Card & Board Game' }
     ];
 
-    const filterGames = (name: string, type: number | undefined, genre: number | undefined) => {
+    const gameViews = [
+        { id: 1, name: "First person" },
+        { id: 2, name: "Third person" },
+        { id: 3, name: "Bird view / Isometric" },
+        { id: 4, name: "Side view" },
+        { id: 5, name: "Text" },
+        { id: 6, name: "Auditory" },
+        { id: 7, name: "Virtual Reality" }
+    ];
+
+    const filterGames = (name: string, type: number | undefined, genre: number | undefined, view: number | undefined) => {
         let temp = games;
 
         if (name) {
@@ -59,30 +78,43 @@ const GamesPage = () => {
                 game.genres.some(genreObj => genreObj.id === genre)
             );
         }
+
+        if (view) {
+            temp = temp.filter(game =>
+                game.perspectives.some(genreObj => genreObj.id === view)
+            );
+        }
+
         setFilteredGames(temp);
         setCurrentPage(1);
     };
 
-
     const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const searchTerm = e.target.value;
         setSearchItem(searchTerm);
-        filterGames(searchTerm, selectedType, selectedGenre);
+        filterGames(searchTerm, selectedType, selectedGenre, selectedView);
     }
     const handleTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const typeValue = Number(e.target.value);
         if (typeValue) console.log("ZMIANA TYPU: ", gameTypes.find(type => type.id == typeValue).name);
         setSelectedType(typeValue);
-        filterGames(searchItem, typeValue, selectedGenre);
+        filterGames(searchItem, typeValue, selectedGenre, selectedView);
     };
     const handleGenreChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const genreValue = Number(e.target.value);
         if (genreValue) console.log("ZMIANA GATUNKU: ", gameGenres.find(genre => genre.id == genreValue).name);
         setSelectedGenre(genreValue);
-        filterGames(searchItem, selectedType, genreValue);
+        filterGames(searchItem, selectedType, genreValue, selectedView);
+    };
+    const handleViewChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const viewValue = Number(e.target.value);
+        if (viewValue) console.log("ZMIANA PERSPEKTYWY: ", gameViews.find(genre => genre.id == viewValue).name);
+        setSelectedView(viewValue);
+        filterGames(searchItem, selectedType, selectedGenre, viewValue);
     };
     const resetFilter = () => {
         setSearchItem('');
+        setSelectedView(0);
         setSelectedType(0);
         setSelectedGenre(0);
         setFilteredGames(games);
@@ -93,43 +125,30 @@ const GamesPage = () => {
         setCurrentPage(newPage);
     }
 
-
     return (
         <>
             <header>
                 <div className={'header-title'}>
                     <h1>LISTA GIER</h1>
                     <DataExportPanel/>
+                    <button onClick={() => {
+                        resetToken();
+                        navigate("/");
+                    }}
+                    className={'logout-button'}
+                    >
+                        WYLOGUJ
+                    </button>
                 </div>
                 <div className={'filter-widget'}>
-                    <div className={'pagination'}>
-                        <div className="">
-                            <button onClick={() => {
-                                if (currentPage > 1) handlePageChange(currentPage - 1);
-                            }}
-                                    disabled={currentPage===1}
-                            >
-                                ←
-                            </button>
-                            {Array.from({length: totalPages}, (_, i) => i + 1).map(page => (
-                                <button
-                                    key={page}
-                                    onClick={() => handlePageChange(page)}
-                                    disabled={page === currentPage}
-                                    className={page === currentPage ? 'active' : ''}
-                                >
-                                    {page}
-                                </button>
-                            ))}
-                            <button onClick={() => {
-                                if (currentPage < totalPages) handlePageChange(currentPage + 1);
-                            }}
-                                disabled={currentPage===totalPages}
-                            >
-                                →
-                            </button>
-                        </div>
-                    </div>
+                    <select value={selectedView} onChange={handleViewChange} style={{height: '30px'}}>
+                        <option value="0">PERSPEKTYWA</option>
+                        {gameViews.map((view) => (
+                            <option key={view.id} value={view.id}>
+                                {view.name}
+                            </option>
+                        ))}
+                    </select>
                     <select value={selectedType} onChange={handleTypeChange} style={{height: '30px'}}>
                         <option value="0">RODZAJ</option>
                         {gameTypes.map((type) => (
@@ -156,10 +175,37 @@ const GamesPage = () => {
                     />
                     <button onClick={resetFilter} style={{height: '30px', fontSize: '70%'}}>WYCZYŚĆ</button>
                 </div>
-
             </header>
 
             <div className={'game-cards-container'}>
+                <div className={'pagination'}>
+                    <div className="">
+                        <button onClick={() => {
+                            if (currentPage > 1) handlePageChange(currentPage - 1);
+                        }}
+                                disabled={currentPage === 1}
+                        >
+                            ←
+                        </button>
+                        {Array.from({length: totalPages}, (_, i) => i + 1).map(page => (
+                            <button
+                                key={page}
+                                onClick={() => handlePageChange(page)}
+                                disabled={page === currentPage}
+                                className={page === currentPage ? 'active' : ''}
+                            >
+                                {page}
+                            </button>
+                        ))}
+                        <button onClick={() => {
+                            if (currentPage < totalPages) handlePageChange(currentPage + 1);
+                        }}
+                                disabled={currentPage === totalPages}
+                        >
+                            →
+                        </button>
+                    </div>
+                </div>
                 {displayedGames && displayedGames.map((game) => (
                     <GameCard key={game.id} game={game}/>
                 ))}

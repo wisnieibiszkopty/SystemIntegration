@@ -67,43 +67,36 @@ const LoginForm: React.FC = () => {
     };
 
     return (
-        <div className="modal-form-body">
-            <form
-                onSubmit={handleSubmit}
-                onReset={handleReset}
-                className="modal-body">
-                <div>
-                    <div style={{ marginLeft: '25%', marginRight: '25%', marginBottom: '2%', marginTop: '2%' }}>
-                        <div style={{ width: '100%' }}>
-                            <InputField
-                                label="Adres e-mail"
-                                type="email"
-                                name="email"
-                                value={formData.email}
-                                onChange={handleChange}
-                                placeholder="wprowadź adres email..."
-                                error={formErrors.email}
-                            />
-                            <InputField
-                                label="Hasło"
-                                type="password"
-                                name="password"
-                                value={formData.password}
-                                onChange={handleChange}
-                                placeholder="wprowadź hasło..."
-                                error={formErrors.password}
-                            />
-                        </div>
-                        <div style={{ width: '100%', display: 'flex', justifyContent: 'center'}}>
-                            <button type="submit" className="form-btn">Zaloguj się</button>
-                        </div>
-                    </div>
+        <form
+            onSubmit={handleSubmit}
+            onReset={handleReset}
+        >
+            <div style={{ marginLeft: '25%', marginRight: '25%', marginBottom: '2%', marginTop: '2%' }}>
+                <div className={'form-body'}>
+                    <InputField
+                        label="Adres e-mail"
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        placeholder="wprowadź adres email..."
+                        error={formErrors.email}
+                    />
+                    <InputField
+                        label="Hasło"
+                        type="password"
+                        name="password"
+                        value={formData.password}
+                        onChange={handleChange}
+                        placeholder="wprowadź hasło..."
+                        error={formErrors.password}
+                    />
                 </div>
-            </form>
-            <footer>
-                <div className="footer menu-text">@WPWK</div>
-            </footer>
-        </div>
+                <div className={'form-button'}>
+                    <button type="submit">Zaloguj się</button>
+                </div>
+            </div>
+        </form>
     );
 };
 

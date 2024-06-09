@@ -20,26 +20,26 @@ const InputField: React.FC<InputFieldProps> = ({
    error
 }) => {
     return (
-        <div>
-            <label
-                   style={{
-                       color: 'white',
-                       marginRight: '10px'
-                   }}>
-                {label}
-            </label>
-            <input
-                style={{height: '25px'}}
-                type={type}
-                name={name}
-                value={value}
-                onChange={onChange}
-                placeholder={placeholder}
-                className={`${error ? 'is-invalid' : ''}`}
-
-            />
+        <>
+            <div style={{display: 'flex', flexFlow: 'column', width: '250px'}}>
+                <label
+                    style={{
+                        color: 'white',
+                    }}>
+                    {label}
+                </label>
+                <input
+                    style={{height: '25px'}}
+                    type={type}
+                    name={name}
+                    value={value}
+                    onChange={onChange}
+                    placeholder={placeholder}
+                    className={`${error ? 'is-invalid' : 'input'}`}
+                />
+            </div>
             {error && <span className="text-danger">{error}</span>}
-        </div>
+        </>
     );
 };
 

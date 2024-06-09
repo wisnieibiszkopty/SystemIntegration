@@ -32,7 +32,6 @@ const GameRecordsPage: React.FC = () => {
     return (
         <>
             <GameInfo game={game}/>
-
             <div>
                 {records.length !== 0 && <LineChart ref={chartRef} data={records}/>}
             </div>
