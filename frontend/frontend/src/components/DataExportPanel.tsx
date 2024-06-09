@@ -1,7 +1,6 @@
 import React from "react";
 import {Game} from "../api/interfaces.ts";
-import {exportGame} from "../api/services/Game.ts";
-
+import {exportGame, } from "../api/services/Game.ts";
 const DataExportPanel: React.FC<{game?: Game}> = ({game}) => {
     return (
         <div className={'data-export-panel'}>

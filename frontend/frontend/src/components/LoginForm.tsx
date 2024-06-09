@@ -3,9 +3,15 @@ import InputField from './InputField';
 import {LoginFormData, LoginFormErrors} from "../api/interfaces.ts";
 import {validateLogin} from './validation.ts';
 import {loginUser} from "../api/services/User.ts";
-import {redirect} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
+import {useAuthContext} from "../contexts/AuthContext.tsx";
+import {useGameContext} from "../contexts/GameContext.tsx";
 
+
+//TODO if403 to chuj
 const LoginForm: React.FC = () => {
+    const {updateToken} = useAuthContext();
+    const navigate = useNavigate();
     const [formData, setFormData] = useState<LoginFormData>({
         email: '',
         password: ''
@@ -25,14 +31,15 @@ const LoginForm: React.FC = () => {
         try {
             const response =  await loginUser(formData);
             console.log(response.data)
+            updateToken(response.data.token);
             //Logika po zalogowaniu - redirect
-            redirect('/games');
+            navigate('/games');
         } catch (error: any) {
             // odbiór odpowiedzi z walidacji od serwera i wyswietlenie jej w alercie na stronie
             console.log(error.response ? error.response.data : error.message);
             const message = (error.response ? error.response.data.message : error.message);
             // console.log(error.response.data.error.errors);
-            alert(`${message}`);
+            // alert(`${message}`);
         }
     };
 

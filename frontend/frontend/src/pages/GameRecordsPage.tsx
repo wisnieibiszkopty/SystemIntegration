@@ -6,8 +6,10 @@ import LineChart from "../components/LineChart.tsx";
 import {Chart} from "chart.js";
 import GameRecordsTable from "../components/GameRecordsTable.tsx";
 import GameInfo from "../components/GameInfo.tsx";
+import {useAuthContext} from "../contexts/AuthContext.tsx";
 
 const GameRecordsPage: React.FC = () => {
+    const {token} = useAuthContext();
     const [records, setRecords] = useState<GameRecord[]>([]);
     const location = useLocation();
     const { game } = location.state as {game: Game};
@@ -17,7 +19,7 @@ const GameRecordsPage: React.FC = () => {
         const fetchRecords = async () => {
             try {
                 console.log("FETCHRECORDS START");
-                const recordsData = await getRecords(game.id);
+                const recordsData = await getRecords(game.id, token);
                 setRecords(recordsData);
                 console.log("FETCHRECORDS END");
             } catch (error) {

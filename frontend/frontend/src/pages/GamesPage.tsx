@@ -1,22 +1,22 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import GameCard from "../components/GameCard.tsx";
 import {useGameContext} from "../contexts/GameContext.tsx";
 import InputField from "../components/InputField.tsx";
 import DataExportPanel from "../components/DataExportPanel.tsx";
 
 const GamesPage = () => {
-    const {games, filteredGames, setFilteredGames} = useGameContext();
+    const {games, filteredGames, setFilteredGames, fetchGames } = useGameContext();
     const [searchItem, setSearchItem] = useState('');
     const [selectedType, setSelectedType] = useState<number>();
     const [selectedGenre, setSelectedGenre] = useState<number>();
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 14;
-    const totalPages = Math.ceil(filteredGames.length / itemsPerPage);
+    const totalPages = (filteredGames) ? Math.ceil(filteredGames.length / itemsPerPage) : 0;
 
-    const displayedGames = filteredGames.slice(
+    const displayedGames = (filteredGames) ? filteredGames.slice(
         (currentPage - 1) * itemsPerPage,
         currentPage * itemsPerPage
-    )
+    ) : [];
 
     const gameTypes = [
         { id: 1, name: 'Single player' },
@@ -38,7 +38,7 @@ const GamesPage = () => {
         { id: 34, name: 'Visual Novel' },
         { id: 35, name: 'Card & Board Game' }
     ];
-    console.log(games);
+
     const filterGames = (name: string, type: number | undefined, genre: number | undefined) => {
         let temp = games;
 
@@ -92,6 +92,7 @@ const GamesPage = () => {
     const handlePageChange = (newPage: number) => {
         setCurrentPage(newPage);
     }
+
 
     return (
         <>

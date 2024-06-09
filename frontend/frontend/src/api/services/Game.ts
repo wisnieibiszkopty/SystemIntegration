@@ -2,9 +2,11 @@ import api from "../axios.ts";
 import {Game} from "../interfaces.ts";
 import {AxiosResponse} from "axios";
 
-export const getGames = async (page: number, size: number): Promise<any> => {
+export const getGames = async (page: number, size: number, token: string): Promise<any> => {
     try {
+        console.log(token);
         const response: AxiosResponse<Game[]> = await api.get("/api/games", {
+            headers: { Authorization: `Bearer ${token}` },
             params: {
                 page: page,
                 size: size,
@@ -21,4 +23,13 @@ export const exportGame = (format: string, gameId?: number): string => {
     const baseUrl = "http://localhost:8080/api/exports";
     return gameId !== undefined ? `${baseUrl}/${format}/${gameId}` : `${baseUrl}/${format}`;
 };
+export const exportt = async (token: string) => {
+    try {
+        await api.get("/api/exports/json", {
+            headers: { Authorization: `Bearer ${token}`}
+        });
+    } catch (error) {
+        console.log(error);
+    }
+}
 

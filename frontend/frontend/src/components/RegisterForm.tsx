@@ -4,8 +4,10 @@ import {registerUser} from "../api/services/User.ts";
 import {validateRegister} from './validation.ts';
 import {RegisterFormData, RegisterFormErrors} from "../api/interfaces.ts";
 import {redirect} from "react-router-dom";
+import {useAuthContext} from "../contexts/AuthContext.tsx";
 
 const RegisterForm: React.FC = () => {
+    const {updateToken} = useAuthContext();
     const [formData, setFormData] = useState<RegisterFormData>({
         email: '',
         username: '',
@@ -31,6 +33,7 @@ const RegisterForm: React.FC = () => {
                 console.log('user: ', formData);
                 const response = await registerUser(formData);
                 console.log('response: ', response.data);
+                updateToken(response.data.token);
                 redirect('/games');
             } else {
                 setFormErrors({ passwordCheck: 'Hasła nie pasują do siebie' });
