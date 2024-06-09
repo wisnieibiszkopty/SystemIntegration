@@ -25,10 +25,10 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                    .requestMatchers("/api/auth/**", "/api/records/**")
-                    .permitAll()
-                    .anyRequest()
-                    .authenticated())
+                .requestMatchers("/api/auth/**", "/api/records/**", "/api/games/**", "/api/exports/**")
+                .permitAll()
+                .anyRequest()
+                .authenticated())
             .authenticationProvider(authenticationProvider)
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 

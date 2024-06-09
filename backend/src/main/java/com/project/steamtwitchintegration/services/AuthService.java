@@ -4,6 +4,7 @@ import com.project.steamtwitchintegration.dto.AuthenticationRequest;
 import com.project.steamtwitchintegration.dto.AuthenticationResponse;
 import com.project.steamtwitchintegration.dto.RegisterRequest;
 import com.project.steamtwitchintegration.dto.Role;
+import com.project.steamtwitchintegration.exceptions.UserAlreadyExistsException;
 import com.project.steamtwitchintegration.models.User;
 import com.project.steamtwitchintegration.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -23,10 +26,14 @@ public class AuthService {
     // jak daje z tokenem żądania to sie wysypuje
     // o co ci chodzi
     public AuthenticationResponse register(RegisterRequest request) {
+        Optional<User> existingUser = repository.findByEmail(request.getEmail());
+        if(existingUser.isPresent()){
+            System.out.println("User: " + existingUser.get());
+            throw new UserAlreadyExistsException("User with this email already exists");
+        }
+
         User user = User
             .builder()
-            //.firstname(request.getFirstname())
-            //.lastname(request.getLastname())
             .fullname(request.getFullname())
             .email(request.getEmail())
             .password(passwordEncoder.encode(request.getPassword()))
