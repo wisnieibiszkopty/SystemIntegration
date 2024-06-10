@@ -62,3 +62,26 @@ interface PlayerPerspective {
     name: string;
     games: Game[];
 }
+export interface RegisterFormData {
+    email: string;
+    username: string;
+    password: string;
+    passwordCheck: string;
+}
+export interface RegisterFormErrors {
+    email?: string;
+    username?: string;
+    password?: string;
+    passwordCheck?: string;
+    [key: string]: string | undefined;
+}
+export interface LoginFormData {
+    email: string;
+    password: string;
+}
+
+export interface LoginFormErrors {
+    email?: string;
+    password?: string;
+    [key: string]: string | undefined;
+}

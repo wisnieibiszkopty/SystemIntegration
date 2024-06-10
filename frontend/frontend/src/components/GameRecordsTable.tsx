@@ -2,7 +2,6 @@ import {GameRecord} from "../api/interfaces.ts";
 import React from "react";
 
 const GameRecordsTable: React.FC<{ records: GameRecord[]}> = ({records}) => {
-    console.log(records);
     return (
         <table>
             <thead>

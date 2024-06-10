@@ -4,6 +4,59 @@
   padding: 2rem;
   text-align: center;
 }
+.spinner {
+  border: 5px solid #f3f3f3; /* Light grey */
+  border-top: 5px solid #172a38; /* Blue */
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 1s linear infinite;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+footer {
+  margin-top: 50px;
+}
+.logout-button{
+  height: 45px;
+  color: red;
+  margin-top: 45px;
+}
+.logout-button:hover {
+  filter: brightness(250%);
+}
+.welcome-body {
+  width: 100%;
+  height: 700px;
+}
+.welcome-buttons {
+  height: 50px;
+}
+.form-container {
+  height: 300px;
+  display: flex;
+  flex-flow: column;
+}
+.form-body {
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+}
+input {
+}
+.form-button {
+  margin-top: 20px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+.text-danger {
+  color: red;
+}
 
 .logo {
   height: 6em;
@@ -51,7 +104,7 @@ header {
 }
 .pagination {
   display: flex;
-  justify-content: start;
+  justify-content: center;
   width: 100%;
 }
 .filter-widget {

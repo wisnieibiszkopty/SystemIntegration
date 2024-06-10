@@ -1,9 +1,8 @@
-import React, {createContext, useContext, useState} from "react";
+import React, {createContext, useContext, useEffect, useState} from "react";
 
 type AuthContextType = {
     token: string;
     isAuth: boolean;
-    //user: User;
     updateToken: (accessToken: string) => void;
     resetToken: () => void;
 };
@@ -11,35 +10,41 @@ type AuthContextType = {
 const AuthContext = createContext<AuthContextType>({
     token: '',
     isAuth: false,
-    //user: new User("","", "",[]),
     updateToken: () => {},
-    resetToken: () => {}
+    resetToken: () => {},
 });
 
-export const AuthProvider: React.FC<{children: React.ReactNode}> = ({ children }) => {
+export const AuthProvider: React.FC<{children: React.ReactNode}> = ({children}) => {
     const [token, setToken] = useState<string>('');
     const [isAuth, setIsAuth] = useState<boolean>(false);
 
-    const updateToken = (token: string) => {
-        console.log("Updating token: " + token);
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (token !== null && token !== ''){
+            console.log("useEffectAUTH",token)
+            updateToken(token);
+        }
+    }, [token]);
+  
+    const updateToken = (accessToken: string) => {
+        console.log("updating token");
         setIsAuth(true);
-        setToken(token);
-        const parts = token.split('.');
-        const decodedPayload = JSON.parse(atob(parts[1]));
-        console.log(decodedPayload);
-    };
-
+        setToken(accessToken);
+        localStorage.setItem("token", accessToken);
+        console.log(token)
+    }
+    
     const resetToken = () => {
         setIsAuth(false);
         setToken("");
-        localStorage.setItem('token', null);
-    };
-
+        localStorage.removeItem('token');
+    }
+    
     return (
-      <AuthContext.Provider value={{token, isAuth, updateToken, resetToken}}>
-          {children}
-      </AuthContext.Provider>
-    );
+        <AuthContext.Provider value={{ token, updateToken, isAuth, resetToken }}>
+            {children}
+        </AuthContext.Provider>
+    )
 }
 
 export const useAuthContext = () => useContext(AuthContext);

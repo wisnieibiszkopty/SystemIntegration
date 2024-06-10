@@ -11,9 +11,9 @@ const WelcomePage: React.FC = () => {
     return (
         <div className={'welcome-body'}>
             <h1>
-                Projekt - Integracja Systemów
+                Zestawienie danych STEAM-TWITCH
             </h1>
-            <div>
+            <div className={'welcome-buttons'}>
                 {showLogin ?
                     <button
                         onClick={handleShowRegister}
@@ -31,9 +31,6 @@ const WelcomePage: React.FC = () => {
             <div className="form-container">
                 {showLogin ? <LoginForm/> : <RegisterForm/>}
             </div>
-            <footer>
-                <div className="footer menu-text">@WPWK</div>
-            </footer>
         </div>
     )
 }

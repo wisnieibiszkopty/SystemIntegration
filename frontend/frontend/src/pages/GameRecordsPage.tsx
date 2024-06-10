@@ -6,8 +6,12 @@ import LineChart from "../components/LineChart.tsx";
 import {Chart} from "chart.js";
 import GameRecordsTable from "../components/GameRecordsTable.tsx";
 import GameInfo from "../components/GameInfo.tsx";
+import {useAuthContext} from "../contexts/AuthContext.tsx";
+import LoadingSpinner from "../components/LoadingSpinner.tsx";
 
 const GameRecordsPage: React.FC = () => {
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const {token, isAuth} = useAuthContext();
     const [records, setRecords] = useState<GameRecord[]>([]);
     const location = useLocation();
     const { game } = location.state as {game: Game};
@@ -15,29 +19,40 @@ const GameRecordsPage: React.FC = () => {
 
     useEffect(() => {
         const fetchRecords = async () => {
+            setIsLoading(true);
+            console.log("useEffect GameRecordSPAge")
             try {
                 console.log("FETCHRECORDS START");
-                const recordsData = await getRecords(game.id);
+                const recordsData = await getRecords(game.id, token);
                 setRecords(recordsData);
                 console.log("FETCHRECORDS END");
             } catch (error) {
                 console.error("GamesPage.useEffect() - Error fetching games: ", error);
+            } finally {
+                setIsLoading(false);
             }
         };
-        fetchRecords()
-    }, [game]);
+        if (isAuth) {
+            fetchRecords()
+        }
+    }, [game.id, token, isAuth]);
 
     return (
         <>
-            <GameInfo game={game}/>
-
-            <div>
-                {records.length !== 0 && <LineChart ref={chartRef} data={records}/>}
-            </div>
-            {records.length !== 0 && <GameRecordsTable records={records}/>}
-            <footer>
-                <div className="footer menu-text">@WPWK</div>
-            </footer>
+            {!isLoading ?
+                <div>
+                    <GameInfo game={game}/>
+                    <div>
+                        <LineChart ref={chartRef} data={records}/>
+                    </div>
+                    <GameRecordsTable records={records}/>
+                    <footer>
+                        <div className="footer menu-text">@WPWK</div>
+                    </footer>
+                </div>
+            :
+                <LoadingSpinner/>
+            }
         </>
     )
 }
