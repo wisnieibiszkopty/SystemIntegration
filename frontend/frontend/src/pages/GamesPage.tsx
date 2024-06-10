@@ -66,21 +66,21 @@ const GamesPage = () => {
         { id: 7, name: "Virtual Reality" }
     ];
 
-    const fetchGamesInfo = async () => {
-        try{
-            const gamesInfo = await getGamesInfo();
-            console.log(gamesInfo);
-            setSelectedType(gamesInfo.modes);
-            setSelectedGenre(gamesInfo.genres);
-            setSelectedView(gamesInfo.perspectives);
-        } catch (err){
-            console.error("GameProvider.fetchGames() - Error fetching games: ", err);
-        }
-    }
-
-    useEffect(() => {
-        fetchGamesInfo().then();
-    }, []);
+    // const fetchGamesInfo = async () => {
+    //     try{
+    //         const gamesInfo = await getGamesInfo();
+    //         console.log(gamesInfo);
+    //         setSelectedType(gamesInfo.modes);
+    //         setSelectedGenre(gamesInfo.genres);
+    //         setSelectedView(gamesInfo.perspectives);
+    //     } catch (err){
+    //         console.error("GameProvider.fetchGames() - Error fetching games: ", err);
+    //     }
+    // }
+    //
+    // useEffect(() => {
+    //     fetchGamesInfo().then();
+    // }, []);
 
     console.log(games);
 
@@ -142,13 +142,6 @@ const GamesPage = () => {
         setSelectedView(viewValue);
         filterGames(searchItem, selectedType, selectedGenre, viewValue);
     };
-
-    const handlePerspectiveChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        console.log(e);
-        const perspectiveValue = Number(e.target.value);
-        setSelectedView(perspectiveValue);
-        filterGames(searchItem, selectedType, selectedGenre, perspectiveValue);
-    }
 
     const resetFilter = () => {
         setSearchItem('');
