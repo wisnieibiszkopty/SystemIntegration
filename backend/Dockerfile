@@ -4,7 +4,7 @@ WORKDIR /build
 
 COPY . .
 
-RUN mvn package -DskipTests
+RUN mvn clean package -DskipTests
 
 FROM openjdk:17-alpine
 

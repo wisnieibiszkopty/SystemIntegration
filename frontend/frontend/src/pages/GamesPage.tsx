@@ -70,9 +70,9 @@ const GamesPage = () => {
         try{
             const gamesInfo = await getGamesInfo();
             console.log(gamesInfo);
-            setGameTypes(gamesInfo.modes);
-            setGameGenres(gamesInfo.genres);
-            setGamePerspectives(gamesInfo.perspectives);
+            setSelectedType(gamesInfo.modes);
+            setSelectedGenre(gamesInfo.genres);
+            setSelectedView(gamesInfo.perspectives);
         } catch (err){
             console.error("GameProvider.fetchGames() - Error fetching games: ", err);
         }
@@ -146,7 +146,7 @@ const GamesPage = () => {
     const handlePerspectiveChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         console.log(e);
         const perspectiveValue = Number(e.target.value);
-        setSelectedPerspective(perspectiveValue);
+        setSelectedView(perspectiveValue);
         filterGames(searchItem, selectedType, selectedGenre, perspectiveValue);
     }
 
@@ -155,7 +155,7 @@ const GamesPage = () => {
         setSelectedView(0);
         setSelectedType(0);
         setSelectedGenre(0);
-        setSelectedPerspective(0);
+        setSelectedView(0);
         setFilteredGames(games);
         setCurrentPage(1);
     }
