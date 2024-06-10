@@ -1,11 +1,17 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import GameCard from "../components/GameCard.tsx";
 import {useGameContext} from "../contexts/GameContext.tsx";
 import InputField from "../components/InputField.tsx";
 import DataExportPanel from "../components/DataExportPanel.tsx";
+import {getGamesInfo} from "../api/services/Game.ts";
 import {useNavigate} from "react-router-dom";
 import {useAuthContext} from "../contexts/AuthContext.tsx";
 import LoadingSpinner from "../components/LoadingSpinner.tsx";
+
+type gameInfo = {
+    id: number;
+    name: string;
+}
 
 const GamesPage = () => {
     const {
@@ -60,6 +66,24 @@ const GamesPage = () => {
         { id: 7, name: "Virtual Reality" }
     ];
 
+    const fetchGamesInfo = async () => {
+        try{
+            const gamesInfo = await getGamesInfo();
+            console.log(gamesInfo);
+            setSelectedType(gamesInfo.modes);
+            setSelectedGenre(gamesInfo.genres);
+            setSelectedView(gamesInfo.perspectives);
+        } catch (err){
+            console.error("GameProvider.fetchGames() - Error fetching games: ", err);
+        }
+    }
+
+    useEffect(() => {
+        fetchGamesInfo().then();
+    }, []);
+
+    console.log(games);
+
     const filterGames = (name: string, type: number | undefined, genre: number | undefined, view: number | undefined) => {
         let temp = games;
 
@@ -96,14 +120,18 @@ const GamesPage = () => {
         setSearchItem(searchTerm);
         filterGames(searchTerm, selectedType, selectedGenre, selectedView);
     }
+
     const handleTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const typeValue = Number(e.target.value);
-        if (typeValue) console.log("ZMIANA TYPU: ", gameTypes.find(type => type.id == typeValue).name);
+        // @ts-ignore
+        if (typeValue) console.log("ZMIANA TYPU: ", gameTypes.find((type: gameInfo) => type.id == typeValue).name);
         setSelectedType(typeValue);
         filterGames(searchItem, typeValue, selectedGenre, selectedView);
     };
+
     const handleGenreChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const genreValue = Number(e.target.value);
+        // @ts-ignore
         if (genreValue) console.log("ZMIANA GATUNKU: ", gameGenres.find(genre => genre.id == genreValue).name);
         setSelectedGenre(genreValue);
         filterGames(searchItem, selectedType, genreValue, selectedView);
@@ -114,11 +142,20 @@ const GamesPage = () => {
         setSelectedView(viewValue);
         filterGames(searchItem, selectedType, selectedGenre, viewValue);
     };
+
+    const handlePerspectiveChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        console.log(e);
+        const perspectiveValue = Number(e.target.value);
+        setSelectedView(perspectiveValue);
+        filterGames(searchItem, selectedType, selectedGenre, perspectiveValue);
+    }
+
     const resetFilter = () => {
         setSearchItem('');
         setSelectedView(0);
         setSelectedType(0);
         setSelectedGenre(0);
+        setSelectedView(0);
         setFilteredGames(games);
         setCurrentPage(1);
     }
@@ -153,7 +190,7 @@ const GamesPage = () => {
                     </select>
                     <select value={selectedType} onChange={handleTypeChange} style={{height: '30px'}}>
                         <option value="0">RODZAJ</option>
-                        {gameTypes.map((type) => (
+                        {gameTypes.map((type: gameInfo) => (
                             <option key={type.id} value={type.id}>
                                 {type.name}
                             </option>
@@ -161,7 +198,7 @@ const GamesPage = () => {
                     </select>
                     <select value={selectedGenre} onChange={handleGenreChange} style={{height: '30px'}}>
                         <option value="0">GATUNEK</option>
-                        {gameGenres.map((genre) => (
+                        {gameGenres.map((genre: gameInfo) => (
                             <option key={genre.id} value={genre.id}>
                                 {genre.name}
                             </option>

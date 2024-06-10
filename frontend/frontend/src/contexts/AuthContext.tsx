@@ -1,18 +1,19 @@
 import React, {createContext, useContext, useEffect, useState} from "react";
 
-
 type AuthContextType = {
     token: string;
     isAuth: boolean;
     updateToken: (accessToken: string) => void;
     resetToken: () => void;
 };
+
 const AuthContext = createContext<AuthContextType>({
     token: '',
     isAuth: false,
     updateToken: () => {},
     resetToken: () => {},
 });
+
 export const AuthProvider: React.FC<{children: React.ReactNode}> = ({children}) => {
     const [token, setToken] = useState<string>('');
     const [isAuth, setIsAuth] = useState<boolean>(false);
@@ -24,6 +25,7 @@ export const AuthProvider: React.FC<{children: React.ReactNode}> = ({children}) 
             updateToken(token);
         }
     }, [token]);
+  
     const updateToken = (accessToken: string) => {
         console.log("updating token");
         setIsAuth(true);
@@ -31,15 +33,18 @@ export const AuthProvider: React.FC<{children: React.ReactNode}> = ({children}) 
         localStorage.setItem("token", accessToken);
         console.log(token)
     }
+    
     const resetToken = () => {
         setIsAuth(false);
         setToken("");
-        localStorage.setItem("token", '');
+        localStorage.removeItem('token');
     }
+    
     return (
         <AuthContext.Provider value={{ token, updateToken, isAuth, resetToken }}>
             {children}
         </AuthContext.Provider>
     )
 }
+
 export const useAuthContext = () => useContext(AuthContext);

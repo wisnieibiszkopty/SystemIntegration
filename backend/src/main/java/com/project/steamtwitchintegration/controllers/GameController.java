@@ -32,7 +32,7 @@ public class GameController {
 
     @Operation(summary = "Retrieve genres, modes and perspectives which game can have")
     @ApiResponse(responseCode = "200", content = {
-            @Content(mediaType = "application/json", schema = @Schema(implementation = GamesInfoDto.class))
+        @Content(mediaType = "application/json", schema = @Schema(implementation = GamesInfoDto.class))
     })
     @GetMapping("/info")
     public ResponseEntity<GamesInfoDto> getGameInfo(){

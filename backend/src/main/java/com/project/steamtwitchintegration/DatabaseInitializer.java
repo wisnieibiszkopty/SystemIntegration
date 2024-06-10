@@ -16,16 +16,14 @@ import java.nio.file.Path;
 @Slf4j
 @Component
 public class DatabaseInitializer implements CommandLineRunner {
-    private final GameRepository gameRepository;
     private Parser parser;
     private final IGDBService igdbService;
 
     @Value("${LOAD_DATA:false}")
     private boolean loadDataOnStartup;
 
-    public DatabaseInitializer(IGDBService igdbService, GameRepository gameRepository, Parser parser) {
+    public DatabaseInitializer(IGDBService igdbService, Parser parser) {
         this.igdbService = igdbService;
-        this.gameRepository = gameRepository;
         this.parser = parser;
     }
 
@@ -51,4 +49,5 @@ public class DatabaseInitializer implements CommandLineRunner {
             log.info("Finished loading data");
         }
     }
+
 }
