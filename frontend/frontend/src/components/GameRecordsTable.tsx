@@ -28,7 +28,7 @@ const GameRecordsTable: React.FC<{ records: GameRecord[]}> = ({records}) => {
                 <th>RATIO jakies</th>
                 <th>Średnia widzów</th>
                 <th>Średnia kanałów</th>
-                <th>RATIO</th>
+                <th>Średnia/Szczyt</th>
                 <th>Godziny transmisji</th>
                 <th>Godziny obejrzane</th>
                 <th>Szczyt kanałów</th>

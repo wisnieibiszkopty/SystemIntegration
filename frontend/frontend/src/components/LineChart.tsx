@@ -23,7 +23,7 @@ const LineChart = forwardRef(({data}: PropsType, ref: React.ForwardedRef<any>) =
             { data: steamStatsData.map(item => item.steamAveragePlayers), label: "Średnia graczy", },
             { data: steamStatsData.map(item => item.steamGainPlayers), label: "Przyrost graczy", },
             { data: steamStatsData.map(item => item.steamPeakPlayers), label: "Najwięcej graczy jednocześnie", },
-            { data: steamStatsData.map(item => item.steamAvgPeakPerc), label: "Ratio", },
+            { data: steamStatsData.map(item => item.steamAvgPeakPerc), label: "Średnia/Szczyt", },
         ];
         const twitchData = [
             { data: twitchStatsData.map(item => item.twitchHoursWatched), label: "Godziny obejrzane" },
@@ -33,7 +33,7 @@ const LineChart = forwardRef(({data}: PropsType, ref: React.ForwardedRef<any>) =
             { data: twitchStatsData.map(item => item.twitchStreamers), label: "Ilość streamerów" },
             { data: twitchStatsData.map(item => item.twitchAvgViewers), label: "Średnia ilośc widzów" },
             { data: twitchStatsData.map(item => item.twitchAvgChannels), label: "Średnia ilość streamerów" },
-            { data: twitchStatsData.map(item => item.twitchAvgViewerRatio), label: "RATIO" },
+            { data: twitchStatsData.map(item => item.twitchAvgViewerRatio), label: "Średnia/Szczyt" },
         ];
         const steamDataSets = steamData.map(({data,label}) => (
             {
