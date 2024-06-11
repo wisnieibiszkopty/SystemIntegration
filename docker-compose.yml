@@ -31,42 +31,42 @@ services:
       - POSTGRES_PASSWORD=integration
     expose:
       - 5432
-#  pgadmin:
-#    image: dpage/pgadmin4
-#    environment:
-#      PGADMIN_DEFAULT_EMAIL: admin@pgadmin.com
-#      PGADMIN_DEFAULT_PASSWORD: password
-#      PGADMIN_LISTEN_PORT: 80
-#    ports:
-#      - "15432:80"
-#    volumes:
-#      - pgadmin:/var/lib/pgadmin
-#    depends_on:
-#      - db
-#    networks:
-#      integration:
-#  prometheus:
-#    image: prom/prometheus
-#    container_name: prometheus
-#    command:
-#      - '--config.file=/etc/prometheus/prometheus.yml'
-#    ports:
-#      - "9090:9090"
-#    restart: unless-stopped
-#    volumes:
-#      - ./prometheus:/etc/prometheus
-#      - prom_data:/prometheus
-#  grafana:
-#    image: grafana/grafana
-#    container_name: grafana
-#    ports:
-#      - "3000:3000"
-#    restart: unless-stopped
-#    environment:
-#      - GF_SECURITY_ADMIN_USER=admin
-#      - GF_SECURITY_ADMIN_PASSWORD=grafana
-#    volumes:
-#      - ./grafana:/etc/grafana/provisioning/datasources
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@pgadmin.com
+      PGADMIN_DEFAULT_PASSWORD: password
+      PGADMIN_LISTEN_PORT: 80
+    ports:
+      - "15432:80"
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    depends_on:
+      - db
+    networks:
+      integration:
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    ports:
+      - "9090:9090"
+    restart: unless-stopped
+    volumes:
+      - ./prometheus:/etc/prometheus
+      - prom_data:/prometheus
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=grafana
+    volumes:
+      - ./grafana:/etc/grafana/provisioning/datasources
   frontend:
     build:
       context: frontend/frontend
