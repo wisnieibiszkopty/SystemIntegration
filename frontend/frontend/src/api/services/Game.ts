@@ -5,12 +5,12 @@ import {AxiosResponse} from "axios";
 export const getGames = async (page: number, size: number, token: string): Promise<any> => {
     try {
         console.log(token);
-        const response: AxiosResponse<Game[]> = await api.get("/api/games", {
-            headers: { Authorization: `Bearer ${token}` },
-            params: {
-                page: page,
-                size: size,
-            }
+        const response: AxiosResponse<Game[]> = await api.get("/api/games/all", {
+            headers: { Authorization: `Bearer ${token}` }
+            // params: {
+            //     page: page,
+            //     size: size,
+            // }
         });
         console.log(response.data);
         return response.data;

@@ -7,6 +7,8 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +32,7 @@ public class Parser {
     /**
      * Function loading Game objects to DataBase by Repository
      */
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
     public void loadGames() {
         long startTime = System.nanoTime();
         log.info("Started adding GameRecords");
@@ -101,7 +104,7 @@ public class Parser {
         long endTime = System.nanoTime();
 
 //        szybsze od stream.filter ale minimalnie wolniejszy of for
-        games.removeIf(game -> game.getGameRecords().size() < 15);
+        games.removeIf(game -> game.getGameRecords().size() < 10);
         System.out.println("CZAS: " + (endTime-startTime) / 1e9 );
         gameRepository.saveAll(games);
         log.info("Finished adding game records");

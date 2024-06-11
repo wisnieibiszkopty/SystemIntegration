@@ -3,18 +3,21 @@ import InputField from './InputField';
 import {registerUser} from "../api/services/User.ts";
 import {validateRegister} from './validation.ts';
 import {RegisterFormData, RegisterFormErrors} from "../api/interfaces.ts";
-import {redirect} from "react-router-dom";
+import {redirect, useNavigate} from "react-router-dom";
 import {useAuthContext} from "../contexts/AuthContext.tsx";
 
 const RegisterForm: React.FC = () => {
     const {updateToken} = useAuthContext();
+    const navigate = useNavigate();
     const [formData, setFormData] = useState<RegisterFormData>({
         email: '',
-        username: '',
+        fullname: '',
         password: '',
         passwordCheck: ''
     });
+
     const [formErrors, setFormErrors] = useState<RegisterFormErrors>({});
+
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         // Logika obsługi przesłania formularza rejestracji
@@ -34,23 +37,26 @@ const RegisterForm: React.FC = () => {
                 const response = await registerUser(formData);
                 console.log('response: ', response.data);
                 updateToken(response.data.token);
-                redirect('/games');
+                navigate('/games');
             } else {
                 setFormErrors({ passwordCheck: 'Hasła nie pasują do siebie' });
             }
         } catch (error: any) {
             // odbiór odpowiedzi z walidacji od serwera i wyswietlenie jej w alercie na stronie
+            console.log("error data: ", error.response);
+            console.log("error message: ", error.message);
             console.log(error.response ? error.response.data : error.message);
-            const message = (error.response ? error.response.data.message : error.message);
+            // const message = (error.response ? error.response.data.message : error.message);
+            const message = error.response.data;
             alert(`${message}`);
-            handleReset();
+            //handleReset();
         }
     };
 
     const handleReset = () => {
         setFormData({
             email: '',
-            username: '',
+            fullname: '',
             password: '',
             passwordCheck: ''
         });
@@ -88,11 +94,11 @@ const RegisterForm: React.FC = () => {
                     <InputField
                         label="Nazwa użytkownika"
                         type="text"
-                        name="username"
-                        value={formData.username}
+                        name="fullname"
+                        value={formData.fullname}
                         onChange={handleChange}
                         placeholder="wprowadź nazwę użytkownika..."
-                        error={formErrors.username}
+                        error={formErrors.fullname}
                     />
                     <InputField
                         label="Hasło"

@@ -21,6 +21,8 @@ public class DatabaseInitializer implements CommandLineRunner {
 
     @Value("${LOAD_DATA:false}")
     private boolean loadDataOnStartup;
+    @Value("${FETCH_FROM_API:false}")
+    private boolean fetchDataFromApi;
 
     public DatabaseInitializer(IGDBService igdbService, Parser parser) {
         this.igdbService = igdbService;
@@ -30,9 +32,6 @@ public class DatabaseInitializer implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         if(loadDataOnStartup){
-            igdbService.loadTwitchToken();
-            igdbService.loadGameGeneralInfo();
-
             CsvParser csvParser = new CsvParser();
 
             InputStream steamStream = getClass().getResourceAsStream("/data/SteamModified.csv");
@@ -44,10 +43,17 @@ public class DatabaseInitializer implements CommandLineRunner {
             csvParser.importData(twitchStream);
 
             parser.loadGames();
-            igdbService.loadGamesInfo();
 
             log.info("Finished loading data");
         }
+        if(fetchDataFromApi){
+            log.info("Started fetching games info from api");
+            igdbService.loadTwitchToken();
+            igdbService.loadGameGeneralInfo();
+            igdbService.loadGamesInfo();
+            log.info("Finished fetching games info from api");
+        }
+
     }
 
 }

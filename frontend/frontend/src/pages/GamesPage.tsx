@@ -28,7 +28,7 @@ const GamesPage = () => {
     const itemsPerPage = 14;
     const totalPages = (filteredGames) ? Math.ceil(filteredGames.length / itemsPerPage) : 0;
     const navigate = useNavigate();
-    const {resetToken} = useAuthContext();
+    const {resetToken, isAuth} = useAuthContext();
 
     const displayedGames = (filteredGames) ? filteredGames.slice(
         (currentPage - 1) * itemsPerPage,
@@ -65,6 +65,13 @@ const GamesPage = () => {
         { id: 6, name: "Auditory" },
         { id: 7, name: "Virtual Reality" }
     ];
+
+    useEffect(() => {
+        if(!isAuth){
+            navigate('/');
+            alert("Zaloguj się aby mieć dostęp do tej podstrony");
+        }
+    }, [isAuth]);
 
     // const fetchGamesInfo = async () => {
     //     try{

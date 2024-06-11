@@ -7,6 +7,8 @@ import com.project.steamtwitchintegration.specifications.GameRecordSpec;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.rmi.server.ExportException;
 import java.text.ParseException;
@@ -24,7 +26,10 @@ public class GameRecordService {
         this.recordRepository = recordRepository;
     }
 
-    // why it is so slow
+    @Transactional(
+        propagation = Propagation.REQUIRED,
+        timeout = 15,
+        readOnly = true)
     public List<GameRecord> getGameRecords(Long gameId, String startDate, String endDate){
         Specification<GameRecord> spec = GameRecordSpec.getFilteredRecords(new RecordFilterParam(gameId, startDate, endDate));
         return this.recordRepository.findAll(spec);

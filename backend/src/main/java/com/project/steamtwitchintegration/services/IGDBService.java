@@ -18,6 +18,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -34,8 +35,6 @@ import java.util.stream.Collectors;
 public class IGDBService {
     @Autowired
     private RestTemplate restTemplate;
-    @Autowired
-    private EntityManager em;
     private ObjectMapper objectMapper;
     private GameRepository gameRepository;
     private PlayerPerspectiveRepository perspectiveRepository;
@@ -145,7 +144,6 @@ public class IGDBService {
 
         log.info("Finished loading game modes info");
 
-        // not sure if this endpoint provides every genre
         log.info("Loading game genres...");
 
         JsonNode gameGenres = sendRequest("genres", "fields name;");
@@ -178,13 +176,13 @@ public class IGDBService {
         log.info("Finished loading player perspectives");
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
     public void loadGamesInfo(){
         List<Game> games = gameRepository.findAll();
         System.out.println("count: " + games.size());
         String bodyGeneral = "fields name, cover, game_modes, genres, player_perspectives, rating, rating_count, total_rating, total_rating_count; where name = \"";
 
         // load details about every game from api
-        // int i = 0;
         for(Game game : games){
             String body =
                 bodyGeneral
@@ -196,11 +194,7 @@ public class IGDBService {
             if(jsonResponse.isEmpty()){
                 System.out.println("Nie mozna znalezc: " + game.getGameName());
             } else {
-                //JsonNode gameInfo = jsonResponse.get(0);
-                //System.out.println(gameInfo);
-
                 for(JsonNode gameInfo: jsonResponse){
-
                     try{
                         // setting basic info
                         game.setRating(gameInfo.get("rating").asDouble());
@@ -216,7 +210,6 @@ public class IGDBService {
                         }
 
                         // setting many-to-many relationships
-
                         // cleaning up failed runs effects
                         game.setPerspectives(new ArrayList<>());
                         game.setGenres(new ArrayList<>());
@@ -257,7 +250,6 @@ public class IGDBService {
                         });
 
                         modeRepository.saveAll(modes);
-
                         // all good, can exit loop
                         break;
                     } catch(Exception e){
