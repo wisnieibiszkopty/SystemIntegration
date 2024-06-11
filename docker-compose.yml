@@ -17,6 +17,7 @@ services:
       # set to true to initialize data from csv files
       # if database already has data prevent adding redundant data by setting to false
       - LOAD_DATA=false
+      - FETCH_FROM_API=false
   db:
     image: postgres
     restart: always
