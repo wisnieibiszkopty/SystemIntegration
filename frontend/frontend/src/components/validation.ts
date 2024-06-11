@@ -3,7 +3,7 @@ import {LoginFormData, LoginFormErrors} from "../api/interfaces.ts";
 
 export const validateRegister = (formData: RegisterFormData) => {
     const errors: RegisterFormErrors = {};
-    if (!formData.username || formData.username.length < 3) errors.username = "Podaj nazwe użytkownika (co najmniej 3 znaki)!";
+    if (!formData.fullname || formData.fullname.length < 3) errors.username = "Podaj nazwe użytkownika (co najmniej 3 znaki)!";
     if (!formData.email) {
         errors.email = "Podaj adres email!";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {

@@ -23,12 +23,9 @@ public class AuthService {
     private final JwtService jwtService;
     private final AuthenticationManager authManager;
 
-    // jak daje z tokenem żądania to sie wysypuje
-    // o co ci chodzi
     public AuthenticationResponse register(RegisterRequest request) {
         Optional<User> existingUser = repository.findByEmail(request.getEmail());
         if(existingUser.isPresent()){
-            System.out.println("User: " + existingUser.get());
             throw new UserAlreadyExistsException("User with this email already exists");
         }
 

@@ -1,7 +1,7 @@
 import React, {useEffect, useRef, useState} from "react";
 import {Game, GameRecord} from "../api/interfaces.ts";
 import {getRecords} from "../api/services/GameRecord.ts";
-import {useLocation} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import LineChart from "../components/LineChart.tsx";
 import {Chart} from "chart.js";
 import GameRecordsTable from "../components/GameRecordsTable.tsx";
@@ -14,8 +14,16 @@ const GameRecordsPage: React.FC = () => {
     const {token, isAuth} = useAuthContext();
     const [records, setRecords] = useState<GameRecord[]>([]);
     const location = useLocation();
+    const navigate = useNavigate();
     const { game } = location.state as {game: Game};
     const chartRef = useRef<Chart | null>(null);
+
+    useEffect(() => {
+        if(!isAuth) {
+            navigate('/');
+            alert("Zaloguj się aby mieć dostęp do tej podstrony");
+        }
+    }, []);
 
     useEffect(() => {
         const fetchRecords = async () => {

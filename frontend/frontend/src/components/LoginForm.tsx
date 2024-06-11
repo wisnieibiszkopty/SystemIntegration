@@ -32,9 +32,11 @@ const LoginForm: React.FC = () => {
             //Logika po zalogowaniu - redirect
             navigate('/games');
         } catch (error: any) {
+            console.error(error);
             if (error.response.status === 403){
                 alert('Niepoprawne dane logowania!');
-                handleReset();
+                // Why is it clearing inputs?
+                //handleReset();
             }
         }
     };

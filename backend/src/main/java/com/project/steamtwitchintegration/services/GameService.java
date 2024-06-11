@@ -1,29 +1,19 @@
 package com.project.steamtwitchintegration.services;
 
-import com.project.steamtwitchintegration.dto.GameDto;
 import com.project.steamtwitchintegration.dto.GamesInfoDto;
 import com.project.steamtwitchintegration.models.*;
 import com.project.steamtwitchintegration.projections.GameProjection;
 import com.project.steamtwitchintegration.repositories.*;
-import com.project.steamtwitchintegration.specifications.GameSpec;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Root;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-
-// TODO
-// method to return list of games grouped by genres, name etc...
-// method to return game records filtered by time and info only twitch, only steam, none?
 
 @Service
 @Slf4j

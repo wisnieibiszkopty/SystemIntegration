@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:integration_db
+    driverClassName: org.h2.Driver
+    username: integration
+    password: integration
+    schema: classpath:schema.sql
+    data: classpath:data.sql
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true

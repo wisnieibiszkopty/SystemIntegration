@@ -64,13 +64,13 @@ interface PlayerPerspective {
 }
 export interface RegisterFormData {
     email: string;
-    username: string;
+    fullname: string;
     password: string;
     passwordCheck: string;
 }
 export interface RegisterFormErrors {
     email?: string;
-    username?: string;
+    fullname?: string;
     password?: string;
     passwordCheck?: string;
     [key: string]: string | undefined;

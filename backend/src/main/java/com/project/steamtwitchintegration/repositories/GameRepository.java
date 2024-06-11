@@ -18,6 +18,7 @@ import java.util.List;
 public interface GameRepository extends JpaRepository<Game, Long>{
 
     Page<GameProjection> findAllBy(Pageable pageable);
+    List<GameProjection> findAllBy();
 
     // None of this method return proper intersection but at this point I don't even care
     Page<GameProjection> findByPerspectivesIdIn(@Param("perspectivesIds") List<Long> perspectivesId, Pageable pageable);

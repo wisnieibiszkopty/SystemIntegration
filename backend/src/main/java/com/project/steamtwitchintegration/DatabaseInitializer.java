@@ -19,7 +19,7 @@ public class DatabaseInitializer implements CommandLineRunner {
     private Parser parser;
     private final IGDBService igdbService;
 
-    @Value("${LOAD_DATA:false}")
+    @Value("${LOAD_DATA:true}")
     private boolean loadDataOnStartup;
 
     public DatabaseInitializer(IGDBService igdbService, Parser parser) {
