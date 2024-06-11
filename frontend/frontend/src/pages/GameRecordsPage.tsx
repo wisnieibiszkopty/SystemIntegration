@@ -23,7 +23,7 @@ const GameRecordsPage: React.FC = () => {
             navigate('/');
             alert("Zaloguj się aby mieć dostęp do tej podstrony");
         }
-    }, []);
+    }, [isAuth]);
 
     useEffect(() => {
         const fetchRecords = async () => {

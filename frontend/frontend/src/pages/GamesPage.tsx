@@ -71,7 +71,7 @@ const GamesPage = () => {
             navigate('/');
             alert("Zaloguj się aby mieć dostęp do tej podstrony");
         }
-    }, []);
+    }, [isAuth]);
 
     // const fetchGamesInfo = async () => {
     //     try{
