@@ -63,6 +63,12 @@ public class GameController {
         return ResponseEntity.ok(gameService.getAllGames(page, size, perspectives, modes, genres));
     }
 
+    // pagination isn't handled on frontend so why bother
+    @GetMapping("/all")
+    public ResponseEntity<List<GameProjection>> getPlainGames(){
+        return ResponseEntity.ok(gameService.getAllGamesAsList());
+    }
+
     @Operation(
         summary = "Retrieve games by name",
         description = "Retrieve paginated data about games searched by name or it part"

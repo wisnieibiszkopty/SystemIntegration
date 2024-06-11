@@ -64,8 +64,8 @@ export const GameProvider: React.FC<{children: React.ReactNode}> = ({children}) 
             try {
                 console.log("FETCH GAMES")
                 const gamesData = await getGames(0,100, token);
-                setGames(gamesData.content.reverse());
-                setFilteredGames(gamesData.content);
+                setGames(gamesData.reverse());
+                setFilteredGames(gamesData);
             } catch (error) {
                 console.error("GameProvider.fetchGames() - Error fetching games: ", error);
             } finally {

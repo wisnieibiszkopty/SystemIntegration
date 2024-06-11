@@ -24,7 +24,6 @@ public interface GameRepository extends JpaRepository<Game, Long>{
     Page<GameProjection> findByPerspectivesIdIn(@Param("perspectivesIds") List<Long> perspectivesId, Pageable pageable);
     Page<GameProjection> findByGenresIdIn(@Param("genresId") List<Long> genresId, Pageable pageable);
     Page<GameProjection> findByModesIdIn(@Param("modesId") List<Long> modesId, Pageable pageable);
-
     Page<GameProjection> findAllByGameNameContainingIgnoreCase(String name, Pageable pageable);
 
     @Query("SELECT DISTINCT new com.project.steamtwitchintegration.dto.GameDto(g.id, g.gameName, g.coverUrl," +

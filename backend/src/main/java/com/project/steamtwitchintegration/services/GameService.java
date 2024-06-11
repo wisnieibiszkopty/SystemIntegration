@@ -70,7 +70,12 @@ public class GameService {
         return gameRepository.findAllBy(pageable);
     }
 
+    public List<GameProjection> getAllGamesAsList(){
+        return gameRepository.findAllBy();
+    }
+
     //  do czegos to sie przydaje?
+    // nie wiem robimy wszystko na froncie i tak
     @Transactional(
         propagation = Propagation.REQUIRED,
         timeout = 15,
