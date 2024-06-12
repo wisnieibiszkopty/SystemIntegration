@@ -64,6 +64,9 @@ public class IGDBService {
     }
 
     public void loadTwitchToken(){
+        log.info(clientId);
+        log.info(clientSecret);
+
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<Object> request = new HttpEntity<>(headers);

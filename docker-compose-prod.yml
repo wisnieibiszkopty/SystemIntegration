@@ -18,12 +18,12 @@ services:
       # set to true to initialize data from csv files
       # if database already has data prevent adding redundant data by setting to false
       - LOAD_DATA=false
-      - FETCH_FROM_API=true
-  db:
+      - FETCH_FROM_API=false
+  postgres_db:
     image: postgres
     restart: always
     volumes:
-      - data:/var/lib/postgresql/data
+      - data_postgres:/var/lib/postgresql/data
     networks:
       - integration
     environment:
@@ -82,7 +82,7 @@ services:
     depends_on:
       - backend
 volumes:
-  data:
+  data_postgres:
   pgadmin:
   prom_data:
 # add secrets for password
