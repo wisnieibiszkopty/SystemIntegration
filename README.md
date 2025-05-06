@@ -1,23 +1,29 @@
-Projekt Integracja systemow
+# Steam and twitch games data analysis
 
-SteamCharts
+The goal of this project was to create a comparative analysis examining the correlation between the popularity of games on Twitch and Steam.
 
-Trzeba wyselekcjonowac gry do analizy, wyrzucic te które nie maja danych na twitchu albo maja ich za mało.
-Problem przy tworzeniu bazydanych zwiazany z id, najpewniej cos spowodowane relacją miedzy tabelami
-TODO Dokonczyc jsonParser i xmlParser.
+## 🔧 Features
 
-Pierwszy rekord SteamCharts nie zawiera wartości gain, gdyż nie jest porównywany z danymi z poprzedniego miesiąca
-Wartość ta została zamieniona na 0. Podobny problem wystepował również przy odchylenie standardowe.
+- Processing games data from csv files
+- Getting additional game data from IGDB
+- Storing data in a PostgreSQL database
+- Browsing data through a flexible REST API
+- Visualizing data on a React dashboard
+- Restricting data access to authorized users only
+- Full support for containerization with Docker
+- Integrated CI/CD pipeline for automated deployment
 
-Początkowo struktura bazy danych odpowiadała plikom csv - występowały dwie tabele dla danych z Twitcha i Steama.
-Nie było to jednak optymalne rozwiązanie do dalszego użytku w aplikacji, dlatego od teraz istnieje ogólny obieg gra,
-do którego przypisane są rekordy zawierające informacje na temat statystyk z danego miesiąca.
+## 🛠 Techstack
 
-Zostają wczytane z api dodatkowe dane do gry - rating, image_url oraz gatunek, tryb gry, i perspektywa, dodano dla nich
-osobne tabele w bazie aby przechowywać te informacje w relacji wiele do wielu. W części przypadków api nie znajduje gry po nazwie
-Nie chce podać też wszystkich gatunków gier jakie przechowuje
+- Java
+- Spring Boot
+- Postgres
+- Javascript
+- React
+- Docker
+- Github Actions
 
-Próbowano utworzyć zapytanie filtrujące gry na podstawie gatunku, trybu gry, perspektywy i nazwy, przy czym każdy parametr mógłbyć opcjonalnie, jednak nie zostało
-to osiągnięte i zostało zastąpione uproszczoną wersją.
+## 🚀 Setup
 
-Dodano możliwość filtrowania rekordów czasowych od wybranej daty rozpoczęcia i zakończenia.
+```
+docker-compose up
